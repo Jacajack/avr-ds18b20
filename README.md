@@ -4,10 +4,11 @@ This is a library for controlling temperature sensor DS1820 with AVR.
 # Features
  - Structures for sensor configuration
  - Functions for reading temperatures, ROMs
- - Functions for
+ - Functions for matching ROMs
 
-# Usage
-## Reading temperature
+# Examples
+ - ### **Reading temperature**
+
 ```c
 #include <stdio.h>
 
