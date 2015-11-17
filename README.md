@@ -49,3 +49,10 @@ int main( )
 }
 
 ```
+
+# Sample wiring diagram
+<img src="samplewiring.png" height=400px></img>
+
+This is sample wiring diagram. It shows basic connections between DS1820 and microcontroller. It also works with code snippet above.
+
+**Note: You can use whatever AVR microcontroller You want to, ATmega328 is only example.**
