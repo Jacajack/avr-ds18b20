@@ -25,3 +25,7 @@ extern void OneWireWriteByte( OneWireConfiguration *, unsigned char ); //Write b
 extern unsigned char OneWireRead( OneWireConfiguration * ); //Read one wire data bus
 extern unsigned char OneWireReadByte( OneWireConfiguration * ); //Read byte from one wire data bus
 
+
+//Version history:
+//  - v0.5 - 15-11-2012
+//  - v1.1 - 27-12-2015
