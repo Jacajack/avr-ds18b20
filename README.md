@@ -3,8 +3,10 @@ This is a library for controlling temperature sensor DS1820 with AVR.
 
 # Features
  - Structures for sensor configuration
- - Functions for reading temperatures, ROMs
- - Functions for matching ROMs
+ - Functions for reading temperatures and ROMs
+ - Allows configuring DS1820 devices
+ - CRC support
+ - Includes standalone OneWire library
 
 # Examples:
 
