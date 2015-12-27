@@ -1,22 +1,32 @@
 #define _DALLAS_1820_C
 #include "Dallas1820.h"
 
-void Dallas1820Request( OneWireConfiguration *Config ) //Send request to Dallas1820 on one wire bus
+/******************************************************************************/
+/**                           Reading data                                   **/
+/**                                                                          **/
+/******************************************************************************/
+
+void Dallas1820Request( OneWireConfiguration *Config ) //Send conversion request to Dallas1820 on one wire bus
 {
+    //Config - OneWire device configuration structure
+
     OneWireInit( Config );
-    OneWireWriteByte( Config, 0xCC );
-    OneWireWriteByte( Config, 0x44 );
+    OneWireWriteByte( Config, 0xCC ); //Command - Skip ROM
+    OneWireWriteByte( Config, 0x44 ); //Command - Convert
 }
 
 int Dallas18B20Read( OneWireConfiguration *Config ) //Read Dallas1820 temperature from one wire bus
 {
+    //Config - OneWire device configuration structure
+    //Returned value: Temperature (*16)
+
     unsigned char Response[9];
     int Temperature;
 
     OneWireInit( Config );
 
-    OneWireWriteByte( Config, 0xCC );
-    OneWireWriteByte( Config, 0xBE );
+    OneWireWriteByte( Config, 0xCC ); //Command - Skip ROM
+    OneWireWriteByte( Config, 0xBE ); //Command - Read Scratchpad
 
     for ( unsigned char i = 0; i < 9; i++ )
         Response[i] = OneWireReadByte( Config );
@@ -31,17 +41,20 @@ int Dallas18B20Read( OneWireConfiguration *Config ) //Read Dallas1820 temperatur
 
 int Dallas18B20MatchRead( OneWireConfiguration *Config ) //Read Dallas1820 temperature from one wire bus
 {
+    //Config - OneWire device configuration structure
+    //Returned value: Temperature (*16)
+
     unsigned char Response[9];
     int Temperature;
 
     OneWireInit( Config );
 
-    OneWireWriteByte( Config, 0x55 );
+    OneWireWriteByte( Config, 0x55 ); //Command - Match ROM
 
     for ( unsigned char i = 0; i < 8; i++ )
         OneWireWriteByte( Config, ( *Config ).ROM[i] );
 
-    OneWireWriteByte( Config, 0xBE );
+    OneWireWriteByte( Config, 0xBE ); //Command - Read Scratchpad
 
     for ( unsigned char i = 0; i < 9; i++ )
         Response[i] = OneWireReadByte( Config );
@@ -56,17 +69,21 @@ int Dallas18B20MatchRead( OneWireConfiguration *Config ) //Read Dallas1820 tempe
 
 int Dallas18B20ArrayMatchRead( OneWireConfiguration *Config, const unsigned char *ROM ) //Read Dallas1820 temperature from one wire bus
 {
+    //Config - OneWire device configuration structure
+    //ROM - pointer to array with ROM stored
+    //Returned value: Temperature (*16)
+
     unsigned char Response[9];
     int Temperature;
 
     OneWireInit( Config );
 
-    OneWireWriteByte( Config, 0x55 );
+    OneWireWriteByte( Config, 0x55 ); //Command - Match ROM
 
     for ( unsigned char i = 0; i < 8; i++ )
         OneWireWriteByte( Config, ROM[i] );
 
-    OneWireWriteByte( Config, 0xBE );
+    OneWireWriteByte( Config, 0xBE ); //Command - Read Scratchpad
 
     for ( unsigned char i = 0; i < 9; i++ )
         Response[i] = OneWireReadByte( Config );
@@ -79,37 +96,71 @@ int Dallas18B20ArrayMatchRead( OneWireConfiguration *Config, const unsigned char
     return Temperature;
 }
 
+/******************************************************************************/
+/**                                  ROM                                     **/
+/**                                                                          **/
+/******************************************************************************/
+
 char Dallas1820ReadROM( OneWireConfiguration *Config ) //Read ROM to configuration structure
 {
+    //Config - OneWire device configuration structure
+    //Returned values: ( 0 - OK, 1 - CRC error, 2 - communication error )
+
     if( OneWireInit( Config ) ) return 2;
 
-    OneWireWriteByte( Config, 0x33 );
+    OneWireWriteByte( Config, 0x33 ); //Command - Read ROM
 
     for ( unsigned char i = 0; i < 8; i++ )
         ( *Config ).ROM[i] = OneWireReadByte( Config );
 
-    return Dallas1820CRC8( ( *Config ).ROM, 7 ) == ( *Config ).ROM[7] ? 0 : 1; //Returned values: ( 0 - OK, 1 - CRC error, 2 - communication error )
+    return Dallas1820CRC8( ( *Config ).ROM, 7 ) == ( *Config ).ROM[7] ? 0 : 1;
 }
 
 char Dallas1820ReadROMArray( OneWireConfiguration *Config, unsigned char *ROM ) //Read ROM to array
 {
+    //Config - OneWire device configuration structure
+    //ROM - pointer to array for storing ROM
+    //Returned values: ( 0 - OK, 1 - CRC error, 2 - communication error )
+
     if ( OneWireInit( Config ) ) return 2;
 
-    OneWireWriteByte( Config, 0x33 );
+    OneWireWriteByte( Config, 0x33 ); //Command - Read ROM
 
     for ( unsigned char i = 0; i < 8; i++ )
         ROM[i] = OneWireReadByte( Config );
 
-    return Dallas1820CRC8( ROM, 7 ) == ROM[7] ? 0 : 1; //Returned values: ( 0 - OK, 1 - CRC error, 2 - communication error )
+    return Dallas1820CRC8( ROM, 7 ) == ROM[7] ? 0 : 1;
 }
+
+
+
+/******************************************************************************/
+/**                              Utilities                                   **/
+/**                                                                          **/
+/******************************************************************************/
 
 float Dallas18B20ToCelcius( int Temperature ) //Convert from Dallas18B20 response to temperature in Celcius degrees
 {
+    //Temperature - integer temperature value
+    //Returned value: Temperature in Celcius degrees
+
     return (float) Temperature / 16.0f;
 }
 
+
+
+/******************************************************************************/
+/**                            Configuration                                 **/
+/**                                                                          **/
+/******************************************************************************/
+
 void Dallas1820Config( OneWireConfiguration *Config, unsigned char TH, unsigned char TL, unsigned char Configuration ) //Set up Dallas1820 internal configuration
 {
+    //Config - OneWire device configuration structure
+    //TH - Thermostat high temperature
+    //TL - Thermostat low temperature
+    //Configuration - DS1820 configuration data
+
     OneWireInit( Config );
     OneWireWriteByte( Config, 0xCC ); //Command - SKIP ROM
     OneWireWriteByte( Config, 0x4E ); //Command - Write Scratchpad
@@ -119,8 +170,18 @@ void Dallas1820Config( OneWireConfiguration *Config, unsigned char TH, unsigned 
     OneWireWriteByte( Config, Configuration );
 }
 
+
+
+/******************************************************************************/
+/**                           CRC8 calculation                               **/
+/**                                                                          **/
+/******************************************************************************/
+
 unsigned char Dallas1820CRC8( unsigned char *Data, unsigned char Length ) //Generate 8bit CRC for given data
 {
+    //Data - pointer to data
+    //Length - length of data to use
+
     unsigned char CRC = 0;
 
     for ( unsigned char i = 0; i < Length; i++ )

@@ -9,6 +9,9 @@
 
 unsigned char OneWireInit( OneWireConfiguration *Config ) //Init one wire bus
 {
+    //Config - OneWire device configuration structure
+    //Returned values: ( 0 - OK, 1 - error )
+
     unsigned char Response = 0;
     unsigned char SReg = SREG; //Store status register
 
@@ -40,6 +43,9 @@ unsigned char OneWireInit( OneWireConfiguration *Config ) //Init one wire bus
 
 void OneWireWrite( OneWireConfiguration *Config, unsigned char Value ) //Write 1 or 0 to one wire bus
 {
+    //Config - OneWire device configuration structure
+    //Value - 1 or 0 to write on OneWire bus
+
     unsigned char SReg = SREG; //Store status register
 
     cli( ); //Disable interrupts
@@ -65,6 +71,9 @@ void OneWireWrite( OneWireConfiguration *Config, unsigned char Value ) //Write 1
 
 void OneWireWriteByte( OneWireConfiguration *Config, unsigned char Data ) //Write byte to one wire bus
 {
+    //Config - OneWire device configuration structure
+    //Data - Byte to write on OneWire bus
+
     for ( unsigned char i = 1; i != 0; i <<= 1 ) //Write byte in 8 single bit writes
     {
         OneWireWrite( Config, Data & i );
@@ -73,6 +82,9 @@ void OneWireWriteByte( OneWireConfiguration *Config, unsigned char Data ) //Writ
 
 unsigned char OneWireRead( OneWireConfiguration *Config ) //Read one wire data bus
 {
+    //Config - OneWire device configuration structure
+    //Returned value: 1 or 0 - value from OneWire bus
+
     unsigned char Response = 0;
     unsigned char SReg = SREG; //Store status register
 
@@ -99,6 +111,9 @@ unsigned char OneWireRead( OneWireConfiguration *Config ) //Read one wire data b
 
 unsigned char OneWireReadByte( OneWireConfiguration *Config ) //Read byte from one wire data bus
 {
+    //Config - OneWire device configuration structure
+    //Returned values: Byte read from OneWire bus
+
     unsigned char Data = 0;
 
     for ( unsigned char i = 1; i != 0; i <<= 1 ) //Read byte in 8 single bit reads
