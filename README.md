@@ -25,7 +25,7 @@ int main( )
     float Temperature = 0.0f;
 
     //Make sensor pin output (optional)
-    DDRD = (1 << 7);
+    DDRD = ( 1 << 7 );
 
     //Sensor configuration (port direction register, port output register, port input register and mask)
     OneWireConfiguration Thermometer = { &DDRD, &PORTD, &PIND, ( 1 << 7 ) };
@@ -34,13 +34,13 @@ int main( )
 
     while ( 1 )
     {
-        //Request Dallas 1820
+        //Request Dallas 1820 temperature conversion
         Dallas1820Request( &Thermometer );
 
         //Read temperature
         Temperature = Dallas18B20ToCelcius( Dallas18B20Read( &Thermometer ) );
 
-        //Use data
+        //Use data (printf( ) is only example)
         printf( "%f\n", (double) Temperature );
 
         //Wait 1s
