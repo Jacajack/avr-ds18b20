@@ -1,7 +1,7 @@
 #ifdef __ONE_WIRE
 #error One Wire library included more than once
 #else
-#define _ONE_WIRE 1.0
+#define _ONE_WIRE 1.1
 #endif
 
 #include <inttypes.h>

@@ -15,7 +15,7 @@ unsigned char OneWireInit( OneWireConfiguration *Config ) //Init one wire bus
     cli( ); //Disable interrupts
 
     *( ( *Config ).Port ) |= ( *Config ).Mask; //Write 1 to output
-	*( ( *Config ).PortDirection ) |= ( *Config ).Mask;
+	*( ( *Config ).PortDirection ) |= ( *Config ).Mask; //Set port to output
 	*( ( *Config ).Port ) &= ~( *Config ).Mask; //Write 0 to output
 
     _delay_us( 600 );
@@ -26,13 +26,16 @@ unsigned char OneWireInit( OneWireConfiguration *Config ) //Init one wire bus
 
     Response = *( (*Config ).PortInput ) & ( *Config ).Mask; //Read input
 
-    *( ( *Config ).Port ) |= ( *Config ).Mask; //Write 1 to output
+    _delay_us( 200 );
 
-    _delay_us( 500 );
+    *( ( *Config ).Port ) |= ( *Config ).Mask; //Write 1 to output
+    *( ( *Config ).PortDirection ) |= ( *Config ).Mask; //Set port to output
+
+    _delay_us( 600 );
 
     SREG = SReg; //Restore status register
 
-    return Response != 0; //Return logical value
+    return Response != 0; //Return logical value ( 0 - OK, 1 - communication error )
 }
 
 void OneWireWrite( OneWireConfiguration *Config, unsigned char Value ) //Write 1 or 0 to one wire bus
@@ -46,7 +49,7 @@ void OneWireWrite( OneWireConfiguration *Config, unsigned char Value ) //Write 1
 	*( ( *Config ).Port ) &= ~( *Config ).Mask; //Write 0 to output
 
     if ( Value != 0 )   //Change delay amounts according to given value
-        _delay_us( 10 );
+        _delay_us( 8 );
     else
         _delay_us( 80 );
 
