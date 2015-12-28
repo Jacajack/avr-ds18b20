@@ -21,6 +21,7 @@ int Dallas18B20Read( OneWireConfiguration *Config ) //Read Dallas1820 temperatur
     //Returned value: Temperature (*16)
 
     unsigned char Response[9];
+    unsigned char i = 0;
     int Temperature;
 
     if ( OneWireInit( Config ) ) return 17600; //When communication error occurs, returns exactly 17600 (1100 degrees)
@@ -28,7 +29,7 @@ int Dallas18B20Read( OneWireConfiguration *Config ) //Read Dallas1820 temperatur
     OneWireWriteByte( Config, 0xCC ); //Command - Skip ROM
     OneWireWriteByte( Config, 0xBE ); //Command - Read Scratchpad
 
-    for ( unsigned char i = 0; i < 9; i++ )
+    for ( i = 0; i < 9; i++ )
         Response[i] = OneWireReadByte( Config );
 
     if ( ( Response[0] | Response[1] | Response[2] | Response[3] | Response[4] | Response[5] | Response[6] | Response[7] ) == 0 )
@@ -48,18 +49,19 @@ int Dallas18B20MatchRead( OneWireConfiguration *Config ) //Read Dallas1820 tempe
     //Returned value: Temperature (*16)
 
     unsigned char Response[9];
+    unsigned char i = 0;
     int Temperature;
 
     if ( OneWireInit( Config ) ) return 17600; //When communication error occurs, returns exactly 17600 (1100 degrees)
 
     OneWireWriteByte( Config, 0x55 ); //Command - Match ROM
 
-    for ( unsigned char i = 0; i < 8; i++ )
+    for ( i = 0; i < 8; i++ )
         OneWireWriteByte( Config, ( *Config ).ROM[i] );
 
     OneWireWriteByte( Config, 0xBE ); //Command - Read Scratchpad
 
-    for ( unsigned char i = 0; i < 9; i++ )
+    for ( i = 0; i < 9; i++ )
         Response[i] = OneWireReadByte( Config );
 
     if ( ( Response[0] | Response[1] | Response[2] | Response[3] | Response[4] | Response[5] | Response[6] | Response[7] ) == 0 )
@@ -80,18 +82,19 @@ int Dallas18B20ArrayMatchRead( OneWireConfiguration *Config, const unsigned char
     //Returned value: Temperature (*16)
 
     unsigned char Response[9];
+    unsigned char i = 0;
     int Temperature;
 
     if ( OneWireInit( Config ) ) return 17600; //When communication error occurs, returns exactly 17600 (1100 degrees)
 
     OneWireWriteByte( Config, 0x55 ); //Command - Match ROM
 
-    for ( unsigned char i = 0; i < 8; i++ )
+    for ( i = 0; i < 8; i++ )
         OneWireWriteByte( Config, ROM[i] );
 
     OneWireWriteByte( Config, 0xBE ); //Command - Read Scratchpad
 
-    for ( unsigned char i = 0; i < 9; i++ )
+    for ( i = 0; i < 9; i++ )
         Response[i] = OneWireReadByte( Config );
 
     if ( ( Response[0] | Response[1] | Response[2] | Response[3] | Response[4] | Response[5] | Response[6] | Response[7] ) == 0 )
@@ -115,11 +118,13 @@ unsigned char Dallas1820ReadROM( OneWireConfiguration *Config ) //Read ROM to co
     //Config - OneWire device configuration structure
     //Returned values: ( 0 - OK, 1 - CRC error, 2 - communication error, 3 - only zeros )
 
+    unsigned char i = 0;
+
     if( OneWireInit( Config ) ) return 2;
 
     OneWireWriteByte( Config, 0x33 ); //Command - Read ROM
 
-    for ( unsigned char i = 0; i < 8; i++ )
+    for ( i = 0; i < 8; i++ )
         ( *Config ).ROM[i] = OneWireReadByte( Config );
 
     if ( ( ( *Config ).ROM[0] | ( *Config ).ROM[1] | ( *Config ).ROM[2] | ( *Config ).ROM[3] | ( *Config ).ROM[4] | ( *Config ).ROM[5] | ( *Config ).ROM[6] | ( *Config ).ROM[7] ) == 0 )
@@ -134,11 +139,13 @@ unsigned char Dallas1820ReadROMArray( OneWireConfiguration *Config, unsigned cha
     //ROM - pointer to array for storing ROM
     //Returned values: ( 0 - OK, 1 - CRC error, 2 - communication error, 3 - only zeros )
 
+    unsigned char i = 0;
+
     if ( OneWireInit( Config ) ) return 2;
 
     OneWireWriteByte( Config, 0x33 ); //Command - Read ROM
 
-    for ( unsigned char i = 0; i < 8; i++ )
+    for ( i = 0; i < 8; i++ )
         ROM[i] = OneWireReadByte( Config );
 
     if ( ( ROM[0] | ROM[1] | ROM[2] | ROM[3] | ROM[4] | ROM[5] | ROM[6] | ROM[7] ) == 0 )
@@ -210,13 +217,16 @@ unsigned char Dallas1820CRC8( unsigned char *Data, unsigned char Length ) //Gene
     //Data - pointer to data
     //Length - length of data to use
 
+    unsigned char i = 0;
+    unsigned char j = 0;
+
     unsigned char CRC = 0;
 
-    for ( unsigned char i = 0; i < Length; i++ )
+    for ( i = 0; i < Length; i++ )
     {
         unsigned char Byte = Data[i];
 
-        for( unsigned char j = 0; j < 8; j++ )
+        for( j = 0; j < 8; j++ )
         {
             unsigned char Mix = ( CRC ^ Byte ) & 0x01;
             CRC >>= 1;

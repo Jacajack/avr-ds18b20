@@ -74,7 +74,9 @@ void OneWireWriteByte( OneWireConfiguration *Config, unsigned char Data ) //Writ
     //Config - OneWire device configuration structure
     //Data - Byte to write on OneWire bus
 
-    for ( unsigned char i = 1; i != 0; i <<= 1 ) //Write byte in 8 single bit writes
+    unsigned char i = 0;
+
+    for ( i = 1; i != 0; i <<= 1 ) //Write byte in 8 single bit writes
     {
         OneWireWrite( Config, Data & i );
     }
@@ -115,8 +117,9 @@ unsigned char OneWireReadByte( OneWireConfiguration *Config ) //Read byte from o
     //Returned values: Byte read from OneWire bus
 
     unsigned char Data = 0;
+    unsigned char i = 0;
 
-    for ( unsigned char i = 1; i != 0; i <<= 1 ) //Read byte in 8 single bit reads
+    for ( i = 1; i != 0; i <<= 1 ) //Read byte in 8 single bit reads
     {
         Data |= OneWireRead( Config ) * i;
     }
