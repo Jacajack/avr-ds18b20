@@ -31,8 +31,8 @@ int Dallas18B20Read( OneWireConfiguration *Config ) //Read Dallas1820 temperatur
     for ( unsigned char i = 0; i < 9; i++ )
         Response[i] = OneWireReadByte( Config );
 
-    //if ( ( Response[0] | Response[1] | Response[2] | Response[3] | Response[4] | Response[5] | Response[6] | Response[7] ) == 0 )
-        //return 40000; //When only zeros were received returns exactly 40000 (2500 degrees)
+    if ( ( Response[0] | Response[1] | Response[2] | Response[3] | Response[4] | Response[5] | Response[6] | Response[7] ) == 0 )
+        return 19200; //When only zeros were received returns exactly 19200 (1200 degrees)
 
     Temperature = (int)( Response[1] << 8 ) + ( Response[0] & 0xFF ); //Get temperature from received data
     //Temperature *= ( Response[1] & ( 1 << 5 ) ? -1 : 1 );
@@ -62,8 +62,8 @@ int Dallas18B20MatchRead( OneWireConfiguration *Config ) //Read Dallas1820 tempe
     for ( unsigned char i = 0; i < 9; i++ )
         Response[i] = OneWireReadByte( Config );
 
-    //if ( ( Response[0] | Response[1] | Response[2] | Response[3] | Response[4] | Response[5] | Response[6] | Response[7] ) == 0 )
-        //return 40000; //When only zeros were received returns exactly 40000 (2500 degrees)
+    if ( ( Response[0] | Response[1] | Response[2] | Response[3] | Response[4] | Response[5] | Response[6] | Response[7] ) == 0 )
+        return 19200; //When only zeros were received returns exactly 19200 (1200 degrees)
 
     Temperature = (int)( Response[1] << 8 ) + ( Response[0] & 0xFF ); //Get temperature from received data
     //Temperature *= ( Response[1] & ( 1 << 5 ) ? -1 : 1 );
@@ -94,8 +94,8 @@ int Dallas18B20ArrayMatchRead( OneWireConfiguration *Config, const unsigned char
     for ( unsigned char i = 0; i < 9; i++ )
         Response[i] = OneWireReadByte( Config );
 
-    //if ( ( Response[0] | Response[1] | Response[2] | Response[3] | Response[4] | Response[5] | Response[6] | Response[7] ) == 0 )
-        //return 48000; //When only zeros were received returns exactly 48000 (3000 degrees)
+    if ( ( Response[0] | Response[1] | Response[2] | Response[3] | Response[4] | Response[5] | Response[6] | Response[7] ) == 0 )
+        return 19200; //When only zeros were received returns exactly 19200 (1200 degrees)
 
     Temperature = (int)( Response[1] << 8 ) + ( Response[0] & 0xFF ); //Get temperature from received data
     //Temperature *= ( Response[1] & ( 1 << 5 ) ? -1 : 1 );
@@ -165,8 +165,9 @@ float Dallas18B20ToCelcius( int Temperature ) //Convert from Dallas18B20 respons
 unsigned char Dallas1820VerifyResponse( float Temperature ) //Decode errors from functions for reading temperatures
 {
     //Temperature - integer or float temperature value
-    //Returned values: ( 0 - OK, 1 - CRC error, 2 - communication error )
+    //Returned values: ( 0 - OK, 1 - CRC error, 2 - communication error, 3 - only zeros )
 
+    if ( Temperature == 1200.0f || Temperature == 19200.0f ) return 3;
     if ( Temperature == 1100.0f || Temperature == 17600.0f ) return 2;
     if ( Temperature == 1000.0f || Temperature == 16000.0f ) return 1;
     return 0;
