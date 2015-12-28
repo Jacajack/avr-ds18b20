@@ -101,7 +101,7 @@ int Dallas18B20ArrayMatchRead( OneWireConfiguration *Config, const unsigned char
 /**                                                                          **/
 /******************************************************************************/
 
-char Dallas1820ReadROM( OneWireConfiguration *Config ) //Read ROM to configuration structure
+unsigned char Dallas1820ReadROM( OneWireConfiguration *Config ) //Read ROM to configuration structure
 {
     //Config - OneWire device configuration structure
     //Returned values: ( 0 - OK, 1 - CRC error, 2 - communication error )
@@ -116,7 +116,7 @@ char Dallas1820ReadROM( OneWireConfiguration *Config ) //Read ROM to configurati
     return Dallas1820CRC8( ( *Config ).ROM, 7 ) == ( *Config ).ROM[7] ? 0 : 1;
 }
 
-char Dallas1820ReadROMArray( OneWireConfiguration *Config, unsigned char *ROM ) //Read ROM to array
+unsigned char Dallas1820ReadROMArray( OneWireConfiguration *Config, unsigned char *ROM ) //Read ROM to array
 {
     //Config - OneWire device configuration structure
     //ROM - pointer to array for storing ROM
@@ -145,6 +145,16 @@ float Dallas18B20ToCelcius( int Temperature ) //Convert from Dallas18B20 respons
     //Returned value: Temperature in Celcius degrees
 
     return (float) Temperature / 16.0f;
+}
+
+unsigned char Dallas1820VerifyResponse( float Temperature ) //Decode errors from functions for reading temperatures
+{
+    //Temperature - integer or float temperature value
+    //Returned values: ( 0 - OK, 1 - CRC error, 2 - communication error )
+
+    if ( Temperature == 2000.0f || Temperature == 32000.0f ) return 2;
+    if ( Temperature == 1000.0f || Temperature == 16000.0f ) return 1;
+    return 0;
 }
 
 
