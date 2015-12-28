@@ -23,7 +23,7 @@ int Dallas18B20Read( OneWireConfiguration *Config ) //Read Dallas1820 temperatur
     unsigned char Response[9];
     int Temperature;
 
-    if ( OneWireInit( Config ) ) return 32000; //When communication error occurs, returns exactly 32000 (2000 degrees)
+    if ( OneWireInit( Config ) ) return 17600; //When communication error occurs, returns exactly 17600 (1100 degrees)
 
     OneWireWriteByte( Config, 0xCC ); //Command - Skip ROM
     OneWireWriteByte( Config, 0xBE ); //Command - Read Scratchpad
@@ -50,7 +50,7 @@ int Dallas18B20MatchRead( OneWireConfiguration *Config ) //Read Dallas1820 tempe
     unsigned char Response[9];
     int Temperature;
 
-    if ( OneWireInit( Config ) ) return 32000; //When communication error occurs, returns exactly 32000 (2000 degrees)
+    if ( OneWireInit( Config ) ) return 17600; //When communication error occurs, returns exactly 17600 (1100 degrees)
 
     OneWireWriteByte( Config, 0x55 ); //Command - Match ROM
 
@@ -82,7 +82,7 @@ int Dallas18B20ArrayMatchRead( OneWireConfiguration *Config, const unsigned char
     unsigned char Response[9];
     int Temperature;
 
-    if ( OneWireInit( Config ) ) return 32000; //When communication error occurs, returns exactly 32000 (2000 degrees)
+    if ( OneWireInit( Config ) ) return 17600; //When communication error occurs, returns exactly 17600 (1100 degrees)
 
     OneWireWriteByte( Config, 0x55 ); //Command - Match ROM
 
@@ -167,7 +167,7 @@ unsigned char Dallas1820VerifyResponse( float Temperature ) //Decode errors from
     //Temperature - integer or float temperature value
     //Returned values: ( 0 - OK, 1 - CRC error, 2 - communication error )
 
-    if ( Temperature == 2000.0f || Temperature == 32000.0f ) return 2;
+    if ( Temperature == 1100.0f || Temperature == 17600.0f ) return 2;
     if ( Temperature == 1000.0f || Temperature == 16000.0f ) return 1;
     return 0;
 }
