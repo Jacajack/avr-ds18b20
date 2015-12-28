@@ -24,9 +24,6 @@ int main( )
 {
     float Temperature = 0.0f;
 
-    //Make sensor pin output (optional)
-    DDRD = ( 1 << 7 );
-
     //Sensor configuration (port direction register, port output register, port input register and mask)
     OneWireConfiguration Thermometer = { &DDRD, &PORTD, &PIND, ( 1 << 7 ) };
 

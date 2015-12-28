@@ -16,8 +16,8 @@ extern int Dallas18B20ArrayMatchRead( OneWireConfiguration *, const unsigned cha
 extern unsigned char Dallas1820ReadROM( OneWireConfiguration * );
 extern unsigned char Dallas1820ReadROMArray( OneWireConfiguration *, unsigned char * );
 extern float Dallas18B20ToCelcius( int ); //Convert from Dallas18B20 response to temperature in Celcius degrees
-extern unsigned char Dallas1820VerifyResponse( float );
-extern void Dallas1820Config( OneWireConfiguration *, unsigned char, unsigned char, unsigned char ); //Set up Dallas1820 internal configuration
+extern unsigned char Dallas1820VerifyResponse( float ); //Decode errors from functions for reading temperatures
+extern unsigned char Dallas1820Config( OneWireConfiguration *, unsigned char, unsigned char, unsigned char ); //Set up Dallas1820 internal configuration
 extern unsigned char Dallas1820CRC8( unsigned char *, unsigned char ); //Generate 8bit CRC for given data
 
 

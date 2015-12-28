@@ -31,6 +31,9 @@ int Dallas18B20Read( OneWireConfiguration *Config ) //Read Dallas1820 temperatur
     for ( unsigned char i = 0; i < 9; i++ )
         Response[i] = OneWireReadByte( Config );
 
+    //if ( ( Response[0] | Response[1] | Response[2] | Response[3] | Response[4] | Response[5] | Response[6] | Response[7] ) == 0 )
+        //return 40000; //When only zeros were received returns exactly 40000 (2500 degrees)
+
     Temperature = (int)( Response[1] << 8 ) + ( Response[0] & 0xFF ); //Get temperature from received data
     //Temperature *= ( Response[1] & ( 1 << 5 ) ? -1 : 1 );
 
@@ -58,6 +61,9 @@ int Dallas18B20MatchRead( OneWireConfiguration *Config ) //Read Dallas1820 tempe
 
     for ( unsigned char i = 0; i < 9; i++ )
         Response[i] = OneWireReadByte( Config );
+
+    //if ( ( Response[0] | Response[1] | Response[2] | Response[3] | Response[4] | Response[5] | Response[6] | Response[7] ) == 0 )
+        //return 40000; //When only zeros were received returns exactly 40000 (2500 degrees)
 
     Temperature = (int)( Response[1] << 8 ) + ( Response[0] & 0xFF ); //Get temperature from received data
     //Temperature *= ( Response[1] & ( 1 << 5 ) ? -1 : 1 );
@@ -88,6 +94,9 @@ int Dallas18B20ArrayMatchRead( OneWireConfiguration *Config, const unsigned char
     for ( unsigned char i = 0; i < 9; i++ )
         Response[i] = OneWireReadByte( Config );
 
+    //if ( ( Response[0] | Response[1] | Response[2] | Response[3] | Response[4] | Response[5] | Response[6] | Response[7] ) == 0 )
+        //return 48000; //When only zeros were received returns exactly 48000 (3000 degrees)
+
     Temperature = (int)( Response[1] << 8 ) + ( Response[0] & 0xFF ); //Get temperature from received data
     //Temperature *= ( Response[1] & ( 1 << 5 ) ? -1 : 1 );
 
@@ -104,7 +113,7 @@ int Dallas18B20ArrayMatchRead( OneWireConfiguration *Config, const unsigned char
 unsigned char Dallas1820ReadROM( OneWireConfiguration *Config ) //Read ROM to configuration structure
 {
     //Config - OneWire device configuration structure
-    //Returned values: ( 0 - OK, 1 - CRC error, 2 - communication error )
+    //Returned values: ( 0 - OK, 1 - CRC error, 2 - communication error, 3 - only zeros )
 
     if( OneWireInit( Config ) ) return 2;
 
@@ -113,6 +122,9 @@ unsigned char Dallas1820ReadROM( OneWireConfiguration *Config ) //Read ROM to co
     for ( unsigned char i = 0; i < 8; i++ )
         ( *Config ).ROM[i] = OneWireReadByte( Config );
 
+    if ( ( ( *Config ).ROM[0] | ( *Config ).ROM[1] | ( *Config ).ROM[2] | ( *Config ).ROM[3] | ( *Config ).ROM[4] | ( *Config ).ROM[5] | ( *Config ).ROM[6] | ( *Config ).ROM[7] ) == 0 )
+        return 3;
+
     return Dallas1820CRC8( ( *Config ).ROM, 7 ) == ( *Config ).ROM[7] ? 0 : 1;
 }
 
@@ -120,7 +132,7 @@ unsigned char Dallas1820ReadROMArray( OneWireConfiguration *Config, unsigned cha
 {
     //Config - OneWire device configuration structure
     //ROM - pointer to array for storing ROM
-    //Returned values: ( 0 - OK, 1 - CRC error, 2 - communication error )
+    //Returned values: ( 0 - OK, 1 - CRC error, 2 - communication error, 3 - only zeros )
 
     if ( OneWireInit( Config ) ) return 2;
 
@@ -128,6 +140,9 @@ unsigned char Dallas1820ReadROMArray( OneWireConfiguration *Config, unsigned cha
 
     for ( unsigned char i = 0; i < 8; i++ )
         ROM[i] = OneWireReadByte( Config );
+
+    if ( ( ROM[0] | ROM[1] | ROM[2] | ROM[3] | ROM[4] | ROM[5] | ROM[6] | ROM[7] ) == 0 )
+        return 3;
 
     return Dallas1820CRC8( ROM, 7 ) == ROM[7] ? 0 : 1;
 }
@@ -164,20 +179,22 @@ unsigned char Dallas1820VerifyResponse( float Temperature ) //Decode errors from
 /**                                                                          **/
 /******************************************************************************/
 
-void Dallas1820Config( OneWireConfiguration *Config, unsigned char TH, unsigned char TL, unsigned char Configuration ) //Set up Dallas1820 internal configuration
+unsigned char Dallas1820Config( OneWireConfiguration *Config, unsigned char TH, unsigned char TL, unsigned char Configuration ) //Set up Dallas1820 internal configuration
 {
     //Config - OneWire device configuration structure
     //TH - Thermostat high temperature
     //TL - Thermostat low temperature
     //Configuration - DS1820 configuration data
 
-    OneWireInit( Config );
+    if ( !OneWireInit( Config ) ) return 2;
     OneWireWriteByte( Config, 0xCC ); //Command - SKIP ROM
     OneWireWriteByte( Config, 0x4E ); //Command - Write Scratchpad
 
     OneWireWriteByte( Config, TH );
     OneWireWriteByte( Config, TL );
     OneWireWriteByte( Config, Configuration );
+
+    return 0;
 }
 
 
