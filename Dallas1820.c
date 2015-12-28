@@ -194,7 +194,7 @@ unsigned char Dallas1820Config( OneWireConfiguration *Config, unsigned char TH, 
     //TL - Thermostat low temperature
     //Configuration - DS1820 configuration data
 
-    if ( !OneWireInit( Config ) ) return 2;
+    if ( OneWireInit( Config ) ) return 2;
     OneWireWriteByte( Config, 0xCC ); //Command - SKIP ROM
     OneWireWriteByte( Config, 0x4E ); //Command - Write Scratchpad
 
