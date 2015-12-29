@@ -64,7 +64,7 @@ OneWireConfiguration Thermometer = { &DDRD, &PORTD, &PIND, ( 1 << 7 ) };
 
 ```
 
-or with ROM address and flags (not supported yet):
+or with ROM address and flags (flags are not supported yet):
 
 ```c
 OneWireConfiguration Thermometer = { &DDRD, &PORTD, &PIND, ( 1 << 7 ), 0, { 0x28, 0xff, 0x9c, 0xc0, 0x71, 0x14, 0x04, 0x15 } };
