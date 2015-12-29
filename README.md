@@ -92,7 +92,14 @@ To read temperature with ROM address matching use function:
 Dallas18B20MatchRead( &Thermometer );
 ``` 
 
-It uses ROM stored in configuration structure. You can get it into there using function `Dallas1820ReadROM( &Thermometer );`. You can also read it to array of unsigned characters, like this `Dallas1820ReadROMArray( &Thermometer, Array );`
+It uses ROM stored in configuration structure. You can get it into there using:
+```c
+Dallas1820ReadROM( &Thermometer );
+```
+You can also read it to array of unsigned characters, like shown below:
+```c
+Dallas1820ReadROMArray( &Thermometer, Array );
+```
 
 By analogy You can also match ROM from characters array:
 
