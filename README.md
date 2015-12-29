@@ -1,12 +1,16 @@
 # AVR Dallas1820
 This is a library for controlling temperature sensor DS1820 with AVR.
 
+<hr>
+
 # Features
  - Structures for sensor configuration
  - Functions for reading temperatures and ROMs
  - Allows configuring DS1820 devices
  - CRC support
  - Includes standalone OneWire library
+
+<hr>
 
 # Examples:
 
@@ -34,6 +38,8 @@ int main( )
         //Request Dallas 1820 temperature conversion
         Dallas1820Request( &Thermometer );
 
+        //Actually conversion takes 800ms, so delay should be included here, but it's optional
+
         //Read temperature
         Temperature = Dallas18B20ToCelcius( Dallas18B20Read( &Thermometer ) );
 
@@ -48,6 +54,55 @@ int main( )
 }
 
 ```
+
+Above code reads temperature from DS18B20 sensor and stores it in `Temperature` variable.
+
+To tell library where sensor is connected `OneWireConfiguation` structure is used. You can set up one like this:
+
+```c
+OneWireConfiguration Thermometer = { &DDRD, &PORTD, &PIND, ( 1 << 7 ) };
+
+```
+
+or with ROM address and flags (not supported yet):
+
+```c
+OneWireConfiguration Thermometer = { &DDRD, &PORTD, &PIND, ( 1 << 7 ), 0, { 0x28, 0xff, 0x9c, 0xc0, 0x71, 0x14, 0x04, 0x15 } };
+
+```
+
+It means sensor is on connected to port D on pin 7. All pointers need to specify same port registers (direction, output, input). Last member is mask, it tells You about exact pin sensor is connected to.
+
+All You need to do later is to pass pointer to configuration structure to functions that need it, like that:
+
+```c
+Dallas1820Request( &Thermometer );
+```
+
+This one tells sensor to start internal temperature conversion, and to read it use:
+
+```c
+Dallas18B20Read( &Thermometer );
+```
+
+This functions return temperature as integer (*16).
+To read temperature with ROM address matching use function:
+
+```c
+Dallas18B20MatchRead( &Thermometer );
+``` 
+
+It uses ROM stored in configuration structure. You can get it into there using function `Dallas1820ReadROM( &Thermometer );`. You can also read it to array of unsigned characters, like this `Dallas1820ReadROMArray( &Thermometer, Array );`
+
+By analogy You can also match ROM from characters array:
+
+```c
+Dallas18B20ArrayMatchRead( &Thermometer, Array );
+```
+
+This is very basic usage of this library, for more information visit [wiki](https://github.com/Jacajack/avr-dallas1820/wiki).
+
+<hr>
 
 # Sample wiring diagram
 <img src="samplewiring.png" height=400px></img>
