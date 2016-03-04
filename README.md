@@ -71,9 +71,9 @@ OneWireConfiguration Thermometer = { &DDRD, &PORTD, &PIND, ( 1 << 7 ), 0, { 0x28
 
 ```
 
-It means sensor is on connected to port D on pin 7. All pointers need to specify same port registers (direction, output, input). Last member is mask, it tells You about exact pin sensor is connected to.
+It means sensor is on connected to port D on pin 7. All pointers need to specify same port registers (direction, output, input). Last member is mask, it tells you about exact pin sensor is connected to.
 
-All You need to do later is to pass pointer to configuration structure to functions that need it, like that:
+All you need to do later is to pass pointer to configuration structure to functions that need it, like that:
 
 ```c
 Dallas1820Request( &Thermometer );
@@ -101,7 +101,7 @@ You can also read it to array of unsigned characters, like shown below:
 Dallas1820ReadROMArray( &Thermometer, Array );
 ```
 
-By analogy You can also match ROM from characters array:
+By analogy you can also match ROM from characters array:
 
 ```c
 Dallas18B20ArrayMatchRead( &Thermometer, Array );
@@ -116,4 +116,4 @@ This is very basic usage of this library, for more information visit [wiki](http
 
 This is sample wiring diagram. It shows basic connections between DS1820 and microcontroller. It also works with code snippet above.
 
-**Note: You can use whatever AVR microcontroller You want to, ATmega328 is only example.**
+**Note: You can use whatever AVR microcontroller you want to, ATmega328 is only example.**
