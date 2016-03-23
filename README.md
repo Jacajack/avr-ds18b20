@@ -107,6 +107,8 @@ Dallas18B20ArrayMatchRead( &Thermometer, Array );
 
 This is very basic usage of this library, for more information visit [wiki](https://github.com/Jacajack/avr-dallas1820/wiki).
 
+Library is very easy to compile, just compile each `.c` file and link all `.o` files together,
+if you have any problems though, just take look at `makefile`.
 
 # Sample wiring diagram
 <img src="samplewiring.png" height=400px></img>
