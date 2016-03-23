@@ -1,0 +1,6 @@
+language: c
+before_install:
+  - apt-get update
+install:
+  - apt-get install gcc-avr binutils-avr avr-libc
+script: make all
