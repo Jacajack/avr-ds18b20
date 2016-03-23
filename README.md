@@ -1,4 +1,7 @@
 # AVR Dallas1820
+
+[![Build Status](https://travis-ci.org/Jacajack/avr-dallas1820.svg?branch=master)](https://travis-ci.org/Jacajack/avr-dallas1820)
+
 This is a library for controlling temperature sensor DS1820 with AVR.
 
 <hr>
@@ -12,7 +15,7 @@ This is a library for controlling temperature sensor DS1820 with AVR.
 
 <hr>
 
-# Examples:
+# Examples
 
 ### Reading temperature
 
@@ -90,7 +93,7 @@ To read temperature with ROM address matching use function:
 
 ```c
 Dallas18B20MatchRead( &Thermometer );
-``` 
+```
 
 It uses ROM stored in configuration structure. You can get it into there using:
 ```c
