@@ -4,16 +4,12 @@
 
 This is a library for controlling temperature sensor DS1820 with AVR.
 
-<hr>
-
 # Features
  - Structures for sensor configuration
  - Functions for reading temperatures and ROMs
  - Allows configuring DS1820 devices
  - CRC support
  - Includes standalone OneWire library
-
-<hr>
 
 # Examples
 
@@ -88,7 +84,6 @@ This one tells sensor to start internal temperature conversion, and to read it u
 Dallas18B20Read( &Thermometer );
 ```
 
-This functions return temperature as integer (*16).
 To read temperature with ROM address matching use function:
 
 ```c
@@ -112,7 +107,6 @@ Dallas18B20ArrayMatchRead( &Thermometer, Array );
 
 This is very basic usage of this library, for more information visit [wiki](https://github.com/Jacajack/avr-dallas1820/wiki).
 
-<hr>
 
 # Sample wiring diagram
 <img src="samplewiring.png" height=400px></img>
