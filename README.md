@@ -16,40 +16,32 @@ This is a library for controlling temperature sensor DS1820 with AVR.
 ### Reading temperature
 
 ```c
-#include <stdio.h>
-
 #include <avr/io.h>
 #include <util/delay.h>
+#include <stdio.h>
 
-#include "ds1820.h"
+#include "uart.h"
+#include "../include/ds1820.h"
+
+char txt[80];
+OnewireConf thermo = { &DDRB, &PORTB, &PINB, ( 1 << 0 ), 0, { 0 } };
 
 int main( )
 {
-    float temperature = 0.0f;
+	uartInit( 9600 );
 
-    //Sensor confuration (port direction register, port output register, port input register and mask)
-    OnewireConf thermometer = { &DDRD, &PORTD, &PIND, ( 1 << 7 ) };
+	while ( 1 )
+	{
+		//Read temperature
+		ds1820request( &thermo );
+		sprintf( txt, "raw: %d\n", ds18b20read( &thermo ) );
+		uartSend( txt );
 
-    ds1820readROM( &thermometer ); //Read ROM
+		//Delay
+		_delay_ms( 1000 );
+	}
 
-    while ( 1 )
-    {
-        //Request Dallas 1820 temperature conversion
-        ds1820request( &thermometer );
-
-        //Actually conversion takes 800ms, so delay should be included here, but it's optional
-
-        //Read temperature
-        Temperature = ds18b20toCelcius( ds18b20read( &thermometer ) );
-
-        //Use data (printf( ) is only example)
-        printf( "%lf\n", (double) temperature );
-
-        //Wait 1s
-        for ( unsigned char i = 0; i < 100; i++ )
-            _delay_ms( 10 );
-    }
-    return 0;
+	return 0;
 }
 
 ```
