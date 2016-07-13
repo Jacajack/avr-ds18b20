@@ -110,7 +110,7 @@ unsigned char onewireRead( OnewireConf *conf ) //Read one wire data bus
     return ( response & ( *conf ).mask ) != 0; //Return logical value
 }
 
-unsigned char OneWireReadByte( OnewireConf *conf ) //Read byte from one wire data bus
+unsigned char onewireReadByte( OnewireConf *conf ) //Read byte from one wire data bus
 {
     //conf - OneWire device confuration structure
     //Returned values: Byte read from OneWire bus
