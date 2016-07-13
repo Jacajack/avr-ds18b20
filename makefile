@@ -11,18 +11,18 @@ CFLAGS = -DF_CPU=$(FCPU) -mmcu=$(MCU) -Os
 LD = avr-ld
 LDFLAGS =
 
-all: obj/Dallas1820.o
+all: obj/ds1820.o
 	rm -rf obj/tmp
-	avr-size -C --mcu=$(MCU) obj/Dallas1820.o
+	avr-size -C --mcu=$(MCU) obj/ds1820.o
 
-obj/Dallas1820.o: obj/OneWire.o obj/tmp/Dallas1820.o FORCE
-	$(LD) $(LDFLAGS) -r obj/OneWire.o obj/tmp/Dallas1820.o -o obj/Dallas1820.o
+obj/ds1820.o: obj/onewire.o obj/tmp/ds1820.o FORCE
+	$(LD) $(LDFLAGS) -r obj/onewire.o obj/tmp/ds1820.o -o obj/ds1820.o
 
-obj/OneWire.o: OneWire.c OneWire.h FORCE
-	$(CC) $(CFLAGS) -c OneWire.c -o obj/OneWire.o
+obj/onewire.o: src/onewire.c include/onewire.h FORCE
+	$(CC) $(CFLAGS) -c src/onewire.c -o obj/onewire.o
 
-obj/tmp/Dallas1820.o: Dallas1820.c Dallas1820.h FORCE
-	$(CC) $(CFLAGS) -c Dallas1820.c -o obj/tmp/Dallas1820.o
+obj/tmp/ds1820.o: src/ds1820.c include/ds1820.h FORCE
+	$(CC) $(CFLAGS) -c src/ds1820.c -o obj/tmp/ds1820.o
 
 FORCE: clean
 	mkdir obj

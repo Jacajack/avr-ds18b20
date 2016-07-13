@@ -5,9 +5,9 @@
 This is a library for controlling temperature sensor DS1820 with AVR.
 
 # Features
- - Structures for sensor configuration
+ - Structures for sensor confuration
  - Functions for reading temperatures and ROMs
- - Allows configuring DS1820 devices
+ - Allows confuring DS1820 devices
  - CRC support
  - Includes standalone OneWire library
 
@@ -27,8 +27,8 @@ int main( )
 {
     float Temperature = 0.0f;
 
-    //Sensor configuration (port direction register, port output register, port input register and mask)
-    OneWireConfiguration Thermometer = { &DDRD, &PORTD, &PIND, ( 1 << 7 ) };
+    //Sensor confuration (port direction register, port output register, port input register and mask)
+    Onewireconf Thermometer = { &DDRD, &portD, &PIND, ( 1 << 7 ) };
 
     Dallas1820ReadROM( &Thermometer ); //Read ROM
 
@@ -56,23 +56,23 @@ int main( )
 
 Above code reads temperature from DS18B20 sensor and stores it in `Temperature` variable.
 
-To tell library where sensor is connected `OneWireConfiguation` structure is used. You can set up one like this:
+To tell library where sensor is connected `OneWireconfuation` structure is used. You can set up one like this:
 
 ```c
-OneWireConfiguration Thermometer = { &DDRD, &PORTD, &PIND, ( 1 << 7 ) };
+Onewireconf Thermometer = { &DDRD, &portD, &PIND, ( 1 << 7 ) };
 
 ```
 
 or with ROM address and flags (flags are not supported yet):
 
 ```c
-OneWireConfiguration Thermometer = { &DDRD, &PORTD, &PIND, ( 1 << 7 ), 0, { 0x28, 0xff, 0x9c, 0xc0, 0x71, 0x14, 0x04, 0x15 } };
+Onewireconf Thermometer = { &DDRD, &portD, &PIND, ( 1 << 7 ), 0, { 0x28, 0xff, 0x9c, 0xc0, 0x71, 0x14, 0x04, 0x15 } };
 
 ```
 
 It means sensor is on connected to port D on pin 7. All pointers need to specify same port registers (direction, output, input). Last member is mask, it tells you about exact pin sensor is connected to.
 
-All you need to do later is to pass pointer to configuration structure to functions that need it, like that:
+All you need to do later is to pass pointer to confuration structure to functions that need it, like that:
 
 ```c
 Dallas1820Request( &Thermometer );
@@ -90,7 +90,7 @@ To read temperature with ROM address matching use function:
 Dallas18B20MatchRead( &Thermometer );
 ```
 
-It uses ROM stored in configuration structure. You can get it into there using:
+It uses ROM stored in confuration structure. You can get it into there using:
 ```c
 Dallas1820ReadROM( &Thermometer );
 ```
