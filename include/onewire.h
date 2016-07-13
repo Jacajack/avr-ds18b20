@@ -1,8 +1,5 @@
-#ifdef __ONE_WIRE
-#error One Wire library included more than once
-#else
-#define _ONE_WIRE 1.0
-#endif
+#ifndef ONEWIRE_H
+#define ONEWIRE_H
 
 #include <inttypes.h>
 
@@ -29,3 +26,5 @@ extern unsigned char onewireReadByte( OnewireConf * ); //Read byte from one wire
 //Version history:
 //  - v0.5 - 15-11-2012
 //  - v1.0 - 27-12-2015
+
+#endif

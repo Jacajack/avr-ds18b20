@@ -1,12 +1,7 @@
-#ifdef _DALLAS_1820
-#error Dallas 1820 library included more than once
-#else
-#define _DALLAS_1820 1.0
-#endif
+#ifndef DS1820_H
+#define DS1820_H
 
-#ifndef _ONE_WIRE
 #include "onewire.h"
-#endif
 
 //Prototypes
 extern void ds1820request( OnewireConf * ); //Send conversion request to Dallas1820 on one wire bus
@@ -24,3 +19,5 @@ extern unsigned char ds1820CRC8( unsigned char *, unsigned char ); //Generate 8b
 //Version history:
 //  - v0.5 - 15-11-2012
 //  - v1.0 - 27-12-2015
+
+#endif

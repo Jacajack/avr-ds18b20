@@ -1,5 +1,3 @@
-#define _ONE_WIRE_C
-
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
