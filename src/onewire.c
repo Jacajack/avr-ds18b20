@@ -18,7 +18,7 @@ unsigned char onewireInit( OnewireConf *conf ) //Init one wire bus
 
     *conf->port |= conf->mask; //Write 1 to output
 	*conf->portDirection |= conf->mask; //Set port to output
-	*conf->port &= ~( conf->mask ); //Write 0 to output
+	*conf->port &= ~conf->mask; //Write 0 to output
 
     _delay_us( 600 );
 
