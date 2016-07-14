@@ -1,4 +1,6 @@
+#include <stdlib.h>
 #include "../include/ds1820.h"
+
 
 /******************************************************************************/
 /**                           Reading data                                   **/
@@ -49,6 +51,7 @@ int ds18b20matchRead( OnewireConf *conf ) //Read Dallas1820 temperature from one
     unsigned char i = 0;
     int temperature;
 
+	if ( conf->rom == NULL ) return 17600;
     if ( onewireInit( conf ) ) return 17600; //When communication error occurs, returns exactly 17600 (1100 degrees)
 
     onewireWriteByte( conf, 0x55 ); //Command - Match ROM
@@ -80,6 +83,7 @@ int ds18b20arrayMatchRead( OnewireConf *conf, const unsigned char *rom ) //Read 
     unsigned char i = 0;
     int temperature;
 
+	if ( conf->rom == NULL ) return 17600;
     if ( onewireInit( conf ) ) return 17600; //When communication error occurs, returns exactly 17600 (1100 degrees)
 
     onewireWriteByte( conf, 0x55 ); //Command - Match ROM
@@ -113,27 +117,29 @@ unsigned char ds1820readROM( OnewireConf *conf ) //Read ROM to confuration struc
 
     unsigned char i = 0;
 
+	if ( conf->rom == NULL ) return 1;
     if( onewireInit( conf ) ) return 2;
 
     onewireWriteByte( conf, 0x33 ); //Command - Read ROM
 
     for ( i = 0; i < 8; i++ )
-        ( *conf ).rom[i] = onewireReadByte( conf );
+        conf->rom[i] = onewireReadByte( conf );
 
-    if ( ( ( *conf ).rom[0] | ( *conf ).rom[1] | ( *conf ).rom[2] | ( *conf ).rom[3] | ( *conf ).rom[4] | ( *conf ).rom[5] | ( *conf ).rom[6] | ( *conf ).rom[7] ) == 0 )
+    if ( ( conf->rom[0] | conf->rom[1] | conf->rom[2] | conf->rom[3] | conf->rom[4] | conf->rom[5] | conf->rom[6] | conf->rom[7] ) == 0 )
         return 3;
 
-    return ds1820CRC8( ( *conf ).rom, 7 ) == ( *conf ).rom[7] ? 0 : 1;
+    return ds1820CRC8( conf->rom, 7 ) == conf->rom[7] ? 0 : 1;
 }
 
 unsigned char ds1820readROMArray( OnewireConf *conf, unsigned char *rom ) //Read ROM to array
 {
     //conf - OneWire device confuration structure
-    //ROM - pointer to array for storing ROM
+    //rom - pointer to array for storing ROM
     //Returned values: ( 0 - OK, 1 - CRC error, 2 - communication error, 3 - only zeros )
 
     unsigned char i = 0;
 
+	if ( conf->rom == NULL ) return 1;
     if ( onewireInit( conf ) ) return 2;
 
     onewireWriteByte( conf, 0x33 ); //Command - Read ROM

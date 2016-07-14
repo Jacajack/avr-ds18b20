@@ -11,7 +11,7 @@ typedef struct OnewireConf
     unsigned char mask; //port mask
     unsigned char flags; //Additional confuration flags for fututre use
 
-    unsigned char rom[8]; //ROM address
+    unsigned char *rom; //ROM address (allocate it yourself)
 
 } OnewireConf;
 
