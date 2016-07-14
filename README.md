@@ -24,7 +24,7 @@ This is a library for controlling temperature sensor DS1820 with AVR.
 #include "../include/ds1820.h"
 
 char txt[80];
-OnewireConf thermo = { &DDRB, &PORTB, &PINB, ( 1 << 0 ), 0, { 0 } };
+OnewireConf thermo = { &DDRB, &PORTB, &PINB, ( 1 << 0 ), 0, NULL };
 
 int main( )
 {
@@ -45,9 +45,6 @@ int main( )
 }
 
 ```
-
-Above code reads temperature from DS18B20 sensor and stores it in `temperature` variable.
-
 To tell library where sensor is connected `OnewireConf` structure is used. You can set up one like this:
 
 ```c
@@ -55,14 +52,7 @@ OnewireConf thermometer = { &DDRD, &PORTD, &PIND, ( 1 << 7 ) };
 
 ```
 
-or with ROM address and flags (flags are not supported yet):
-
-```c
-OnewireConf thermometer = { &DDRD, &PORTD, &PIND, ( 1 << 7 ), 0, { 0x28, 0xff, 0x9c, 0xc0, 0x71, 0x14, 0x04, 0x15 } };
-
-```
-
-It means sensor is on connected to port D on pin 7. All pointers need to specify same port registers (direction, output, input). Last member is mask, it tells you about exact pin sensor is connected to.
+It means sensor is on connected to port D on pin 7. All pointers need to specify same port registers (direction, output, input). Last member is mask, it tells you about exact pin sensor is connected to. Please remember, you have to allocate memory for storing ROM yourself, otherwise stuff won't work.
 
 All you need to do later is to pass pointer to confuration structure to functions that need it, like that:
 
@@ -94,7 +84,7 @@ ds1820readROMArray( &thermometer, array );
 By analogy you can also match ROM from characters array:
 
 ```c
-ds18b20arrayMatchRead( &Thermometer, Array );
+ds18b20arrayMatchRead( &thermometer, array );
 ```
 
 This is very basic usage of this library, for more information visit [wiki](https://github.com/Jacajack/avr-dallas1820/wiki).
