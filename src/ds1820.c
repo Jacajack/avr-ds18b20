@@ -37,7 +37,7 @@ int ds18b20read( OnewireConf *conf ) //Read Dallas1820 temperature from one wire
         return 19200; //When only zeros were received returns exactly 19200 (1200 degrees)
 
     temperature = (int)( response[1] << 8 ) + ( response[0] & 0xFF ); //Get temperature from received data
-    temperature = ds1820CRC8( response, 8 ) != response[8] ? 16000 : temperature; //If CRC is bad, returns exactly 16000 (1000 degrees)
+    temperature = ds1820crc8( response, 8 ) != response[8] ? 16000 : temperature; //If CRC is bad, returns exactly 16000 (1000 degrees)
 
     return temperature;
 }
@@ -68,7 +68,7 @@ int ds18b20matchRead( OnewireConf *conf ) //Read Dallas1820 temperature from one
         return 19200; //When only zeros were received returns exactly 19200 (1200 degrees)
 
     temperature = (int)( response[1] << 8 ) + ( response[0] & 0xFF ); //Get temperature from received data
-    temperature = ds1820CRC8( response, 8 ) != response[8] ? 16000 : temperature; //If CRC is bad, returns exactly 16000 (1000 degrees)
+    temperature = ds1820crc8( response, 8 ) != response[8] ? 16000 : temperature; //If CRC is bad, returns exactly 16000 (1000 degrees)
 
     return temperature;
 }
@@ -100,7 +100,7 @@ int ds18b20arrayMatchRead( OnewireConf *conf, const unsigned char *rom ) //Read 
         return 19200; //When only zeros were received returns exactly 19200 (1200 degrees)
 
     temperature = (int)( response[1] << 8 ) + ( response[0] & 0xFF ); //Get temperature from received data
-    temperature = ds1820CRC8( response, 8 ) != response[8] ? 16000 : temperature; //If CRC is bad, returns exactly 16000 (1000 degrees)
+    temperature = ds1820crc8( response, 8 ) != response[8] ? 16000 : temperature; //If CRC is bad, returns exactly 16000 (1000 degrees)
 
     return temperature;
 }
@@ -128,7 +128,7 @@ unsigned char ds1820readROM( OnewireConf *conf ) //Read ROM to confuration struc
     if ( ( conf->rom[0] | conf->rom[1] | conf->rom[2] | conf->rom[3] | conf->rom[4] | conf->rom[5] | conf->rom[6] | conf->rom[7] ) == 0 )
         return 3;
 
-    return ds1820CRC8( conf->rom, 7 ) == conf->rom[7] ? 0 : 1;
+    return ds1820crc8( conf->rom, 7 ) == conf->rom[7] ? 0 : 1;
 }
 
 unsigned char ds1820readROMArray( OnewireConf *conf, unsigned char *rom ) //Read ROM to array
@@ -150,7 +150,7 @@ unsigned char ds1820readROMArray( OnewireConf *conf, unsigned char *rom ) //Read
     if ( ( rom[0] | rom[1] | rom[2] | rom[3] | rom[4] | rom[5] | rom[6] | rom[7] ) == 0 )
         return 3;
 
-    return ds1820CRC8( rom, 7 ) == rom[7] ? 0 : 1;
+    return ds1820crc8( rom, 7 ) == rom[7] ? 0 : 1;
 }
 
 
@@ -211,7 +211,7 @@ unsigned char ds1820conf( OnewireConf *conf, unsigned char th, unsigned char tl,
 /**                                                                          **/
 /******************************************************************************/
 
-unsigned char ds1820CRC8( unsigned char *data, unsigned char length ) //Generate 8bit CRC for given data
+unsigned char ds1820crc8( unsigned char *data, unsigned char length ) //Generate 8bit CRC for given data
 {
     //data - pointer to data
     //length - length of data to use

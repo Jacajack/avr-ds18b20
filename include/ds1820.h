@@ -13,7 +13,7 @@ extern unsigned char ds1820readROMArray( OnewireConf *, unsigned char * );
 extern float ds18b20toCelcius( int ); //Convert from Dallas18B20 response to temperature in Celcius degrees
 extern unsigned char ds1820verify( float ); //Decode errors from functions for reading temperatures
 extern unsigned char ds1820config( OnewireConf *, unsigned char, unsigned char, unsigned char ); //Set up Dallas1820 internal confuration
-extern unsigned char ds1820CRC8( unsigned char *, unsigned char ); //Generate 8bit CRC for given data
+extern unsigned char ds1820crc8( unsigned char *, unsigned char ); //Generate 8bit CRC for given data
 
 
 //Version history:
