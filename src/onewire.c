@@ -16,22 +16,22 @@ unsigned char onewireInit( OnewireConf *conf ) //Init one wire bus
 
     cli( ); //Disable interrupts
 
-    *( ( *conf ).port ) |= ( *conf ).mask; //Write 1 to output
-	*( ( *conf ).portDirection ) |= ( *conf ).mask; //Set port to output
-	*( ( *conf ).port ) &= ~( *conf ).mask; //Write 0 to output
+    *conf->port |= conf->mask; //Write 1 to output
+	*conf->portDirection |= conf->mask; //Set port to output
+	*conf->port &= ~( conf->mask ); //Write 0 to output
 
     _delay_us( 600 );
 
-    *( ( *conf ) ).portDirection &= ~( *conf ).mask; //Set port to input
+    *conf->portDirection &= ~conf->mask; //Set port to input
 
     _delay_us( 100 );
 
-    response = *( ( *conf ).portInput ) & ( *conf ).mask; //Read input
+    response = *conf->portInput & conf->mask; //Read input
 
     _delay_us( 200 );
 
-    *( ( *conf ).port ) |= ( *conf ).mask; //Write 1 to output
-    *( ( *conf ).portDirection ) |= ( *conf ).mask; //Set port to output
+    *conf->port |= conf->mask; //Write 1 to output
+    *conf->portDirection |= conf->mask; //Set port to output
 
     _delay_us( 600 );
 
@@ -49,16 +49,16 @@ void onewireWrite( OnewireConf *conf, unsigned char value ) //Write 1 or 0 to on
 
     cli( ); //Disable interrupts
 
-    *( ( *conf ).port ) |= ( *conf ).mask; //Write 1 to output
-	*( ( *conf ).portDirection ) |= ( *conf ).mask;
-	*( ( *conf ).port ) &= ~( *conf ).mask; //Write 0 to output
+    *conf->port |= conf->mask; //Write 1 to output
+	*conf->portDirection |= conf->mask;
+	*conf->port &= ~conf->mask; //Write 0 to output
 
     if ( value != 0 )   //Change delay amounts according to given value
         _delay_us( 8 );
     else
         _delay_us( 80 );
 
-    *( ( *conf ).port ) = ( *conf ).mask;
+    *conf->port = conf->mask;
 
     if ( value != 0 )
         _delay_us( 80 );
@@ -91,23 +91,23 @@ unsigned char onewireRead( OnewireConf *conf ) //Read one wire data bus
 
     cli( ); //Disable interrupts
 
-    *( ( *conf ).port ) |= ( *conf ).mask; //Write 1 to output
-	*( ( *conf ).portDirection ) |= ( *conf ).mask;
-	*( ( *conf ).port ) &= ~( *conf ).mask; //Write 0 to output
+    *conf->port |= conf->mask; //Write 1 to output
+	*conf->portDirection |= conf->mask;
+	*conf->port &= ~conf->mask; //Write 0 to output
 
 	_delay_us( 2 );
 
-	*( ( *conf ).portDirection ) &= ~( *conf ).mask; //Set port to input
+	*conf->portDirection &= ~conf->mask; //Set port to input
 
 	_delay_us( 5 );
 
-	response = *( ( *conf ).portInput ); //Read input
+	response = *conf->portInput; //Read input
 
     SREG = sreg; //Restore status register
 
     _delay_us( 60 );
 
-    return ( response & ( *conf ).mask ) != 0; //Return logical value
+    return ( response & conf->mask ) != 0; //Return logical value
 }
 
 unsigned char onewireReadByte( OnewireConf *conf ) //Read byte from one wire data bus

@@ -57,7 +57,7 @@ int ds18b20matchRead( OnewireConf *conf ) //Read Dallas1820 temperature from one
     onewireWriteByte( conf, 0x55 ); //Command - Match ROM
 
     for ( i = 0; i < 8; i++ )
-        onewireWriteByte( conf, ( *conf ).rom[i] );
+        onewireWriteByte( conf, conf->rom[i] );
 
     onewireWriteByte( conf, 0xBE ); //Command - Read Scratchpad
 
