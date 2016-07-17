@@ -160,7 +160,7 @@ unsigned char ds1820readROMArray( OnewireConf *conf, unsigned char *rom ) //Read
 /**                                                                          **/
 /******************************************************************************/
 
-float ds18B20toCelcius( int temperature ) //Convert from Dallas18B20 response to temperature in Celcius degrees
+float ds18b20toCelcius( int temperature ) //Convert from Dallas18B20 response to temperature in Celcius degrees
 {
     //Temperature - integer temperature value
     //Returned value: Temperature in Celcius degrees
