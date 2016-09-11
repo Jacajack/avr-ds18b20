@@ -1,6 +1,6 @@
 # AVR Dallas1820
 
-[![The MIT License](https://img.shields.io/badge/license-MIT-orange.svg?style=flat-square)](http://opensource.org/licenses/MIT) [![Travis CI](https://img.shields.io/travis/Jacajack/avr-dallas1820.svg?style=flat-square)](https://travis-ci.org/Jacajack/avr-ds1820)
+[![The MIT License](https://img.shields.io/badge/license-MIT-orange.svg?style=flat-square)](http://opensource.org/licenses/MIT) [![Travis CI](https://img.shields.io/travis/Jacajack/avr-ds1820.svg?style=flat-square)](https://travis-ci.org/Jacajack/avr-ds1820)
 
 This is a library for controlling temperature sensor DS1820 with AVR.
 
@@ -8,7 +8,6 @@ This is a library for controlling temperature sensor DS1820 with AVR.
  - Structures for sensor confuration
  - Functions for reading temperatures and ROMs
  - Allows confuring DS1820 devices
- - CRC support
  - Includes standalone OneWire library
 
 # Examples
