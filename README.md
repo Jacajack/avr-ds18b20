@@ -1,6 +1,6 @@
 # AVR Dallas1820
 
-[![The MIT License](https://img.shields.io/badge/license-MIT-orange.svg?style=flat-square)](http://opensource.org/licenses/MIT) [![Travis CI](https://img.shields.io/travis/Jacajack/avr-dallas1820.svg?style=flat-square)](https://travis-ci.org/Jacajack/avr-dallas1820)
+[![The MIT License](https://img.shields.io/badge/license-MIT-orange.svg?style=flat-square)](http://opensource.org/licenses/MIT) [![Travis CI](https://img.shields.io/travis/Jacajack/avr-dallas1820.svg?style=flat-square)](https://travis-ci.org/Jacajack/avr-ds1820)
 
 This is a library for controlling temperature sensor DS1820 with AVR.
 
