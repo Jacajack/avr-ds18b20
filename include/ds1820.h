@@ -3,21 +3,23 @@
 
 #include "onewire.h"
 
-//Prototypes
-extern void ds1820request( OnewireConf * ); //Send conversion request to Dallas1820 on one wire bus
-extern int ds18b20read( OnewireConf * ); //Read Dallas1820 temperature from one wire bus
-extern int ds18b20matchRead( OnewireConf * ); //Read Dallas1820 temperature from one wire bus
-extern int ds18b20arrayMatchRead( OnewireConf *, const unsigned char * ); //Read Dallas1820 temperature from one wire bus
-extern unsigned char ds1820readROM( OnewireConf * );
-extern unsigned char ds1820readROMArray( OnewireConf *, unsigned char * );
-extern float ds18b20toCelcius( int ); //Convert from Dallas18B20 response to temperature in Celcius degrees
-extern unsigned char ds1820verify( float ); //Decode errors from functions for reading temperatures
-extern unsigned char ds1820config( OnewireConf *, unsigned char, unsigned char, unsigned char ); //Set up Dallas1820 internal confuration
-extern unsigned char ds1820crc8( unsigned char *, unsigned char ); //Generate 8bit CRC for given data
+#define DS1820_ERROR_OK 	0
+#define DS1820_ERROR_CRC 	1
+#define DS1820_ERROR_COMM	2
+#define DS1820_ERROR_PULL 	3
+#define DS1820_ERROR_OTHER 	4
 
+#define DS1820_ERROR_CRC_TEMP 	16000
+#define DS1820_ERROR_COMM_TEMP	17600
+#define DS1820_ERROR_PULL_TEMP 	19200
+#define DS1820_ERROR_OTHER_TEMP 20800
 
-//Version history:
-//  - v0.5 - 15-11-2012
-//  - v1.0 - 27-12-2015
+extern unsigned char ds1820request( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask );
+extern int ds18b20read( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask );
+extern int ds18b20matchRead( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom ) ;
+extern unsigned char ds1820rom( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom );
+extern unsigned char ds1820verify( int temperature );
+extern unsigned char ds1820conf( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t th, uint8_t tl, uint8_t dsconf );
+extern unsigned char ds1820crc8( unsigned char *data, unsigned char length );
 
 #endif

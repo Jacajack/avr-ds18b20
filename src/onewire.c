@@ -3,125 +3,91 @@
 #include <util/delay.h>
 #include <inttypes.h>
 
-
 #include "../include/onewire.h"
 
-unsigned char onewireInit( OnewireConf *conf ) //Init one wire bus
+unsigned char onewireInit( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask )
 {
-    //conf - OneWire device confuration structure
-    //Returned values: ( 0 - OK, 1 - error )
+	//Init one wire bus
 
     unsigned char response = 0;
     unsigned char sreg = SREG; //Store status register
 
     cli( ); //Disable interrupts
 
-    *conf->port |= conf->mask; //Write 1 to output
-	*conf->portDirection |= conf->mask; //Set port to output
-	*conf->port &= ~conf->mask; //Write 0 to output
+    *port |= mask; //Write 1 to output
+	*direction |= mask; //Set port to output
+	*port &= ~mask; //Write 0 to output
 
     _delay_us( 600 );
 
-    *conf->portDirection &= ~conf->mask; //Set port to input
+    *direction &= ~mask; //Set port to input
 
     _delay_us( 100 );
 
-    response = *conf->portInput & conf->mask; //Read input
+    response = *portin & mask; //Read input
 
     _delay_us( 200 );
 
-    *conf->port |= conf->mask; //Write 1 to output
-    *conf->portDirection |= conf->mask; //Set port to output
+    *port |= mask; //Write 1 to output
+    *direction |= mask; //Set port to output
 
     _delay_us( 600 );
 
     SREG = sreg; //Restore status register
 
-    return response != 0; //Return logical value ( 0 - OK, 1 - communication error )
+    return response != 0 ? ONEWIRE_ERROR_COMM : ONEWIRE_ERROR_OK;
 }
 
-void onewireWrite( OnewireConf *conf, unsigned char value ) //Write 1 or 0 to one wire bus
+void onewireWrite( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t data )
 {
-    //conf - OneWire device confuration structure
-    //value - 1 or 0 to write on OneWire bus
+	//Write byte to one wire bus
 
-    unsigned char sreg = SREG; //Store status register
-
-    cli( ); //Disable interrupts
-
-    *conf->port |= conf->mask; //Write 1 to output
-	*conf->portDirection |= conf->mask;
-	*conf->port &= ~conf->mask; //Write 0 to output
-
-    if ( value != 0 )   //Change delay amounts according to given value
-        _delay_us( 8 );
-    else
-        _delay_us( 80 );
-
-    *conf->port = conf->mask;
-
-    if ( value != 0 )
-        _delay_us( 80 );
-    else
-        _delay_us( 2 );
-
-    SREG = sreg;
-}
-
-void onewireWriteByte( OnewireConf *conf, unsigned char data ) //Write byte to one wire bus
-{
-    //conf - OneWire device confuration structure
-    //data - Byte to write on OneWire bus
-
+	unsigned char sreg = SREG; //Store status register
     unsigned char i = 0;
+
+	cli( );
 
     for ( i = 1; i != 0; i <<= 1 ) //Write byte in 8 single bit writes
     {
-        onewireWrite( conf, data & i );
+		*port |= mask; //Write 1 to output
+		*direction |= mask;
+		*port &= ~mask; //Write 0 to output
+
+		if ( ( data & i ) != 0 ) _delay_us( 8 );
+	    else _delay_us( 80 );
+
+	    *port |= mask;
+
+	    if ( ( data & i ) != 0 ) _delay_us( 80 );
+	    else _delay_us( 2 );
     }
+
+	SREG = sreg;
 }
 
-unsigned char onewireRead( OnewireConf *conf ) //Read one wire data bus
+unsigned char onewireRead( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask )
 {
-    //conf - OneWire device confuration structure
-    //Returned value: 1 or 0 - value from OneWire bus
+	//Read byte from one wire data bus
 
-    unsigned char response = 0;
-    unsigned char sreg = SREG; //Store status register
-
-    cli( ); //Disable interrupts
-
-    *conf->port |= conf->mask; //Write 1 to output
-	*conf->portDirection |= conf->mask;
-	*conf->port &= ~conf->mask; //Write 0 to output
-
-	_delay_us( 2 );
-
-	*conf->portDirection &= ~conf->mask; //Set port to input
-
-	_delay_us( 5 );
-
-	response = *conf->portInput; //Read input
-
-    SREG = sreg; //Restore status register
-
-    _delay_us( 60 );
-
-    return ( response & conf->mask ) != 0; //Return logical value
-}
-
-unsigned char onewireReadByte( OnewireConf *conf ) //Read byte from one wire data bus
-{
-    //conf - OneWire device confuration structure
-    //Returned values: Byte read from OneWire bus
-
+	unsigned char sreg = SREG; //Store status register
     unsigned char data = 0;
     unsigned char i = 0;
 
+	cli( ); //Disable interrupts
+
     for ( i = 1; i != 0; i <<= 1 ) //Read byte in 8 single bit reads
     {
-        data |= onewireRead( conf ) * i;
+		*port |= mask; //Write 1 to output
+		*direction |= mask;
+		*port &= ~mask; //Write 0 to output
+		_delay_us( 2 );
+		*direction &= ~mask; //Set port to input
+		_delay_us( 5 );
+		data |= ( ( *portin & mask ) != 0 ) * i; //Read input
+		_delay_us( 60 );
     }
+
+	SREG = sreg;
 
     return data;
 }

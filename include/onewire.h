@@ -3,28 +3,11 @@
 
 #include <inttypes.h>
 
-typedef struct OnewireConf
-{
-    volatile uint8_t *portDirection; //Pointer to DDR register
-    volatile uint8_t *port; //Pointer to port register
-    volatile uint8_t *portInput; //Pointer to PIN register
-    unsigned char mask; //port mask
-    unsigned char flags; //Additional confuration flags for fututre use
+#define ONEWIRE_ERROR_OK 	0
+#define ONEWIRE_ERROR_COMM 	1
 
-    unsigned char *rom; //ROM address (allocate it yourself)
-
-} OnewireConf;
-
-//Prototypes
-extern unsigned char onewireInit( OnewireConf * ); //Init one wire bus
-extern void onewireWrite( OnewireConf *, unsigned char ); //Write 1 or 0 to one wire bus
-extern void onewireWriteByte( OnewireConf *, unsigned char ); //Write byte to one wire bus
-extern unsigned char onewireRead( OnewireConf * ); //Read one wire data bus
-extern unsigned char onewireReadByte( OnewireConf * ); //Read byte from one wire data bus
-
-
-//Version history:
-//  - v0.5 - 15-11-2012
-//  - v1.0 - 27-12-2015
+extern unsigned char onewireInit( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask );
+extern void onewireWrite( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t data );
+extern unsigned char onewireRead( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask );
 
 #endif
