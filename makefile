@@ -1,4 +1,4 @@
-# 	onewire.h
+# 	makefile
 #
 #	Copyright (C) 2016 Jacek Wieczorek
 #
@@ -6,8 +6,8 @@
 #	of the MIT license.  See the LICENSE file for details.
 
 
-F_CPU = 16000000U
-MCU = atmega8
+F_CPU =
+MCU =
 
 CC = avr-gcc
 CFLAGS = -DF_CPU=$(F_CPU) -mmcu=$(MCU) -Os
@@ -15,11 +15,17 @@ CFLAGS = -DF_CPU=$(F_CPU) -mmcu=$(MCU) -Os
 LD = avr-ld
 LDFLAGS =
 
-all: FORCE obj/ds1820.o
-	rm -rf obj/tmp
-	avr-size -C --mcu=$(MCU) obj/ds1820.o
+ifndef F_CPU
+$(error F_CPU is not set!)
+endif
 
-obj/ds1820.o: obj/onewire.o obj/tmp/ds1820.o
+ifndef MCU
+$(error MCU is not set!)
+endif
+
+all: obj/ds1820.o end
+
+obj/ds1820.o: force obj/onewire.o obj/tmp/ds1820.o
 	$(LD) $(LDFLAGS) -r obj/onewire.o obj/tmp/ds1820.o -o obj/ds1820.o
 
 obj/onewire.o: src/onewire.c include/onewire.h
@@ -28,9 +34,12 @@ obj/onewire.o: src/onewire.c include/onewire.h
 obj/tmp/ds1820.o: src/ds1820.c include/ds1820.h
 	$(CC) $(CFLAGS) -c src/ds1820.c -o obj/tmp/ds1820.o
 
-FORCE: clean
-	mkdir obj
-	mkdir obj/tmp
+force:
+	-mkdir obj
+	-mkdir obj/tmp
 
 clean:
 	rm -rf obj
+
+end:
+	avr-size -C --mcu=$(MCU) obj/ds1820.o
