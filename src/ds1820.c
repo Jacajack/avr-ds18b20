@@ -22,7 +22,7 @@ int ds18b20read( volatile uint8_t *port, volatile uint8_t *direction, volatile u
     unsigned char i = 0;
     int temperature;
 
-    if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM ) return DS1820_ERROR_COMM_TEMP; //When communication error occurs, returns exactly 17600 (1100 degrees)
+    if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM ) return DS1820_ERROR_COMM_TEMP; //Check communication
 
     onewireWrite( port, direction, portin, mask, 0xCC ); //Command - Skip ROM
     onewireWrite( port, direction, portin, mask, 0xBE ); //Command - Read Scratchpad
@@ -31,10 +31,10 @@ int ds18b20read( volatile uint8_t *port, volatile uint8_t *direction, volatile u
         response[i] = onewireRead( port, direction, portin, mask );
 
     if ( ( response[0] | response[1] | response[2] | response[3] | response[4] | response[5] | response[6] | response[7] ) == 0 )
-        return DS1820_ERROR_PULL_TEMP; //When only zeros were received returns exactly 19200 (1200 degrees)
+        return DS1820_ERROR_PULL_TEMP; //Pull-up check
 
     temperature = (int)( response[1] << 8 ) + ( response[0] & 0xFF ); //Get temperature from received data
-    temperature = ds1820crc8( response, 8 ) != response[8] ? DS1820_ERROR_CRC_TEMP : temperature; //If CRC is bad, returns exactly 16000 (1000 degrees)
+    temperature = ds1820crc8( response, 8 ) != response[8] ? DS1820_ERROR_CRC_TEMP : temperature; //CRC check
 
     return temperature;
 }
@@ -50,7 +50,7 @@ int ds18b20matchRead( volatile uint8_t *port, volatile uint8_t *direction, volat
     int temperature;
 
 	if ( rom == NULL ) return DS1820_ERROR_OTHER_TEMP; //Check for pointer error
-    if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM ) return DS1820_ERROR_COMM_TEMP; //When communication error occurs, returns exactly 17600 (1100 degrees)
+    if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM ) return DS1820_ERROR_COMM_TEMP; //Communication check
 
     onewireWrite( port, direction, portin, mask, 0x55 ); //Command - Match ROM
 
@@ -63,10 +63,10 @@ int ds18b20matchRead( volatile uint8_t *port, volatile uint8_t *direction, volat
         response[i] = onewireRead( port, direction, portin, mask );
 
     if ( ( response[0] | response[1] | response[2] | response[3] | response[4] | response[5] | response[6] | response[7] ) == 0 )
-        return DS1820_ERROR_PULL_TEMP; //When only zeros were received returns exactly 19200 (1200 degrees)
+        return DS1820_ERROR_PULL_TEMP; //Check pull-up
 
     temperature = (int)( response[1] << 8 ) + ( response[0] & 0xFF ); //Get temperature from received data
-    temperature = ds1820crc8( response, 8 ) != response[8] ? DS1820_ERROR_CRC_TEMP : temperature; //If CRC is bad, returns exactly 16000 (1000 degrees)
+    temperature = ds1820crc8( response, 8 ) != response[8] ? DS1820_ERROR_CRC_TEMP : temperature; //CRC check
 
     return temperature;
 }
