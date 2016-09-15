@@ -1,6 +1,10 @@
-#This is just a very basic, sample makefile to show how to compile this library
-#Of course, you can use your own setup, compiler warnings should be clear enough
-#Atmega8 is well-known AVR mcu, so it's used here as example
+# 	onewire.h
+#
+#	Copyright (C) 2016 Jacek Wieczorek
+#
+#	This software may be modified and distributed under the terms
+#	of the MIT license.  See the LICENSE file for details.
+
 
 F_CPU = 16000000U
 MCU = atmega8
