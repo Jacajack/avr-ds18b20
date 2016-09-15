@@ -15,8 +15,8 @@ int main( )
 	while ( 1 )
 	{
 		//Read temperature
-		ds1820request( &thermo );
-		sprintf( txt, "raw: %d\n", ds18b20read( &thermo ) );
+		ds1820request( &PORTB, &DDRB, &PINB, ( 1 << 0 ) );
+		sprintf( txt, "raw: %d\n", ds18b20read( &PORTB, &DDRB, &PINB, ( 1 << 0 ) ) );
 		uartSend( txt );
 
 		//Delay
