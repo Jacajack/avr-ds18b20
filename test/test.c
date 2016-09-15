@@ -6,7 +6,6 @@
 #include "../include/ds1820.h"
 
 char txt[80];
-OnewireConf thermo = { &DDRB, &PORTB, &PINB, ( 1 << 0 ), 0, NULL };
 
 int main( )
 {
