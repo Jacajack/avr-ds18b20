@@ -10,7 +10,7 @@ F_CPU =
 MCU =
 
 CC = avr-gcc
-CFLAGS = -DF_CPU=$(F_CPU) -mmcu=$(MCU) -Os
+CFLAGS = -Wall -DF_CPU=$(F_CPU) -mmcu=$(MCU) -Os
 
 LD = avr-ld
 LDFLAGS =
