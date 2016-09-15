@@ -40,7 +40,7 @@ int ds18b20read( volatile uint8_t *port, volatile uint8_t *direction, volatile u
 }
 
 
-int ds18b20matchRead( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom )
+int ds18b20mread( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom )
 {
 	//Read temperature from DS1820
     //Note: returns actual temperature * 16
