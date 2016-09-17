@@ -2,15 +2,15 @@
 
 [![The MIT License](https://img.shields.io/badge/license-MIT-orange.svg?style=flat-square)](http://opensource.org/licenses/MIT) [![Travis CI](https://img.shields.io/travis/Jacajack/avr-ds18b20.svg?style=flat-square)](https://travis-ci.org/Jacajack/avr-ds18b20)
 
-This is a library for controlling DS1820 temperature sensor with AVR micro-controllers.
+`avr-ds18b20` is a library for controlling DS18B20 temperature sensors with AVR micro-controllers.
 
 # Features
- - Structures for sensor configuration
- - Functions for reading temperatures and ROMs
- - Allows configuring DS1820 devices
- - Includes standalone OneWire library
+ - Allows reading temperatures, ROMs and scratchpads
+ - Sensors can be configured
+ - Includes simple standalone 1-Wire library
 
-# Usage
+
+# Some C code
 
 ```c
 #include <avr/io.h>
@@ -24,53 +24,28 @@ char txt[80];
 
 int main( )
 {
+	int temp;
 	uartInit( 9600 );
 
 	while ( 1 )
 	{
-		//Read temperature
-		ds1820request( &PORTB, &DDRB, &PINB, ( 1 << 0 ) );
-		sprintf( txt, "raw: %d\n", ds18b20read( &PORTB, &DDRB, &PINB, ( 1 << 0 ) ) );
-		uartSend( txt );
+		//Start conversion (without ROM matching)
+		ds18b20request( &PORTB, &DDRB, &PINB, ( 1 << 0 ), NULL );
 
-		//Delay
+		//Delay (sensor needs time to perform conversion)
 		_delay_ms( 1000 );
+
+		//Read temperature (without ROM matching)
+		ds18b20read( &PORTB, &DDRB, &PINB, ( 1 << 0 ), NULL, &temp );
+
+        //Somehow output or use data
+		sprintf( txt, "raw: %d\n", temp );
+		uartSend( txt );
 	}
 
 	return 0;
 }
+
 ```
 
-Each function takes pointers to port input, output and direction registers and mask value. Configuration above tells us, that sensors is connected to pin 0 at port B.
-
-```c
-ds1820request( &PORTB, &DDRB, &PINB, ( 1 << 0 ) );
-```
-
-This one tells sensor to start temperature conversion (it takes about 1s), and to read it use:
-
-```c
-ds18b20read( &PORTB, &DDRB, &PINB, ( 1 << 0 ) );
-```
-
-To read temperature with ROM address matching use function (`rom` is pointer to array with ROM stored inside):
-
-```c
-ds18b20mread( &PORTB, &DDRB, &PINB, ( 1 << 0 ), rom );
-```
-
-To read ROM into array (has to be allocated beforehand!) use:
-
-```c
-ds1820rom( &PORTB, &DDRB, &PINB, ( 1 << 0 ), rom );
-```
-
-Those are basic features, for more information visit [wiki](https://github.com/Jacajack/avr-dallas1820/wiki).
-
-Library can be built with `makefile` for every MCU supported by `avr-gcc`.
-Use it like this: `make F_CPU=8000000U MCU=atmega328p`. Simple, isn't it?
-
-# Sample wiring diagram
-<img src="http://i.imgur.com/hVe0f9P.png" height=400px></img>
-
-This is sample wiring diagram. It shows basic connections between DS1820 and a micro-controller.
+For more information visit [wiki](https://github.com/Jacajack/avr-dallas1820/wiki).
