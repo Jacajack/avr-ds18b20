@@ -69,12 +69,10 @@ uint8_t ds18b20request( volatile uint8_t *port, volatile uint8_t *direction, vol
 	return DS18B20_ERROR_OK;
 }
 
-uint8_t ds18b20read( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom, int16_t *temperature )
+uint8_t ds18b20rsp( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom, uint8_t *sp )
 {
-	//Read temperature from DS18B20
-    //Note: returns actual temperature * 16
+    //Read DS18B20 scratchpad
 
-    uint8_t response[9];
     uint8_t i = 0;
 
     //Communication check
@@ -86,20 +84,31 @@ uint8_t ds18b20read( volatile uint8_t *port, volatile uint8_t *direction, volati
 
     //Read scratchpad
     onewireWrite( port, direction, portin, mask, DS18B20_COMMAND_READ_SP );
-
     for ( i = 0; i < 9; i++ )
-        response[i] = onewireRead( port, direction, portin, mask );
+        sp[i] = onewireRead( port, direction, portin, mask );
 
     //Check pull-up
-    if ( ( response[0] | response[1] | response[2] | response[3] | response[4] | response[5] | response[6] | response[7] ) == 0 )
+    if ( ( sp[0] | sp[1] | sp[2] | sp[3] | sp[4] | sp[5] | sp[6] | sp[7] ) == 0 )
         return DS18B20_ERROR_PULL;
 
     //CRC check
-    if ( ds18b20crc8( response, 8 ) != response[8] )
+    if ( ds18b20crc8( sp, 8 ) != sp[8] )
         return DS18B20_ERROR_CRC;
 
+    return DS18B20_ERROR_OK;
+}
+
+uint8_t ds18b20read( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom, int16_t *temperature )
+{
+	//Read temperature from DS18B20
+    //Note: returns actual temperature * 16
+
+    uint8_t sp[9];
+
+    ds18b20rsp( port, direction, portin, mask, rom, sp );
+
     //Get temperature from received data
-    *temperature = (int)( response[1] << 8 ) + ( response[0] & 0xFF );
+    *temperature = (int)( sp[1] << 8 ) + ( sp[0] & 0xFF );
 
     return DS18B20_ERROR_OK;
 }
