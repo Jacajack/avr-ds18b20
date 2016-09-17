@@ -61,7 +61,11 @@ uint8_t ds18b20request( volatile uint8_t *port, volatile uint8_t *direction, vol
 {
 	//Send conversion request to DS18B20 on one wire bus
 
-    if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM ) return DS18B20_ERROR_COMM;
+    //Communication check
+    if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM )
+        return DS18B20_ERROR_COMM;
+
+    //ROM match (or not)
     ds18b20match( port, direction, portin, mask, rom );
 
     //Convert temperature
@@ -106,7 +110,11 @@ uint8_t ds18b20wsp( volatile uint8_t *port, volatile uint8_t *direction, volatil
     //tl - thermostat low temperature
     //conf - configuration byte
 
-    if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM ) return DS18B20_ERROR_COMM;
+    //Communication check
+    if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM )
+        return DS18B20_ERROR_COMM;
+
+    //ROM match (or not)
     ds18b20match( port, direction, portin, mask, rom );
 
     //Write scratchpad
@@ -122,13 +130,18 @@ uint8_t ds18b20csp( volatile uint8_t *port, volatile uint8_t *direction, volatil
 {
     //Copies DS18B20 scratchpad contents to its EEPROM
 
-    if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM ) return DS18B20_ERROR_COMM;
+    //Communication check
+    if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM )
+        return DS18B20_ERROR_COMM;
+
+    //ROM match (or not)
     ds18b20match( port, direction, portin, mask, rom );
 
     //Copy scratchpad
     onewireWrite( port, direction, portin, mask, DS18B20_COMMAND_COPY_SP );
 
     //Set pin high for 10ms
+    //Poor DS18B20 feels happier then...
     *port |= mask;
     *direction |= mask;
     _delay_ms( 10 );
@@ -145,6 +158,7 @@ uint8_t ds18b20read( volatile uint8_t *port, volatile uint8_t *direction, volati
 
     uint8_t sp[9];
 
+    //Communication, pull-up, CRC checks happen here
     ds18b20rsp( port, direction, portin, mask, rom, sp );
 
     //Get temperature from received data
@@ -160,18 +174,17 @@ uint8_t ds18b20rom( volatile uint8_t *port, volatile uint8_t *direction, volatil
     unsigned char i = 0;
 
 	if ( rom == NULL ) return DS18B20_ERROR_OTHER;
+
+    //Communication check
     if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM )
-	{
-		for ( i = 0; i < 8; i++ ) rom[i] = 0;
 		return DS18B20_ERROR_COMM;
-	}
 
     //Read ROM
     onewireWrite( port, direction, portin, mask, DS18B20_COMMAND_READ_ROM );
-
     for ( i = 0; i < 8; i++ )
         rom[i] = onewireRead( port, direction, portin, mask );
 
+    //Pull-up check
     if ( ( rom[0] | rom[1] | rom[2] | rom[3] | rom[4] | rom[5] | rom[6] | rom[7] ) == 0 ) return DS18B20_ERROR_PULL;
 
 	//Check CRC
