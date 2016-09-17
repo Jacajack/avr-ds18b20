@@ -45,12 +45,12 @@ static void ds18b20match( volatile uint8_t *port, volatile uint8_t *direction, v
 	if ( rom == NULL )
     {
         //Skip ROM
-        onewireWrite( port, direction, portin, mask, 0xCC );
+        onewireWrite( port, direction, portin, mask, DS18B20_COMMAND_SKIP_ROM );
     }
     else
     {
         //Match ROM
-        onewireWrite( port, direction, portin, mask, 0x55 );
+        onewireWrite( port, direction, portin, mask, DS18B20_COMMAND_MATCH_ROM );
         for ( i = 0; i < 8; i++ )
             onewireWrite( port, direction, portin, mask, rom[i] );
     }
@@ -64,7 +64,7 @@ uint8_t ds18b20request( volatile uint8_t *port, volatile uint8_t *direction, vol
     ds18b20match( port, direction, portin, mask, rom );
 
     //Convert temperature
-    onewireWrite( port, direction, portin, mask, 0x44 );
+    onewireWrite( port, direction, portin, mask, DS18B20_COMMAND_CONVERT );
 
 	return DS18B20_ERROR_OK;
 }
@@ -85,7 +85,7 @@ uint8_t ds18b20read( volatile uint8_t *port, volatile uint8_t *direction, volati
     ds18b20match( port, direction, portin, mask, rom );
 
     //Read scratchpad
-    onewireWrite( port, direction, portin, mask, 0xBE );
+    onewireWrite( port, direction, portin, mask, DS18B20_COMMAND_READ_SP );
 
     for ( i = 0; i < 9; i++ )
         response[i] = onewireRead( port, direction, portin, mask );
@@ -117,7 +117,8 @@ uint8_t ds18b20rom( volatile uint8_t *port, volatile uint8_t *direction, volatil
 		return DS18B20_ERROR_COMM;
 	}
 
-    onewireWrite( port, direction, portin, mask, 0x33 ); //Read ROM
+    //Read ROM
+    onewireWrite( port, direction, portin, mask, DS18B20_COMMAND_READ_ROM );
 
     for ( i = 0; i < 8; i++ )
         rom[i] = onewireRead( port, direction, portin, mask );
@@ -145,7 +146,7 @@ uint8_t ds18b20wsp( volatile uint8_t *port, volatile uint8_t *direction, volatil
     ds18b20match( port, direction, portin, mask, rom );
 
     //Write scratchpad
-    onewireWrite( port, direction, portin, mask, 0x4E );
+    onewireWrite( port, direction, portin, mask, DS18B20_COMMAND_WRITE_SP );
     onewireWrite( port, direction, portin, mask, th );
     onewireWrite( port, direction, portin, mask, tl );
     onewireWrite( port, direction, portin, mask, conf );

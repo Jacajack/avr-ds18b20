@@ -18,6 +18,14 @@
 #define DS18B20_ERROR_PULL 	3
 #define DS18B20_ERROR_OTHER 4
 
+#define DS18B20_COMMAND_READ_ROM 0x33
+#define DS18B20_COMMAND_MATCH_ROM 0x55
+#define DS18B20_COMMAND_SKIP_ROM 0xCC
+#define DS18B20_COMMAND_CONVERT 0x44
+#define DS18B20_COMMAND_WRITE_SP 0x4E
+#define DS18B20_COMMAND_READ_SP 0xBE
+#define DS18B20_COMMAND_COPY_SP 0x48
+
 extern uint8_t ds18b20request( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom );
 extern uint8_t ds18b20read( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom, int16_t *temperature ) ;
 extern uint8_t ds18b20rom( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom );
