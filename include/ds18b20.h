@@ -26,6 +26,11 @@
 #define DS18B20_COMMAND_READ_SP 0xBE
 #define DS18B20_COMMAND_COPY_SP 0x48
 
+#define DS18B20_RES09 ( 0 << 5 )
+#define DS18B20_RES10 ( 1 << 5 )
+#define DS18B20_RES11 ( 2 << 5 )
+#define DS18B20_RES12 ( 3 << 5 )
+
 extern uint8_t ds18b20request( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom );
 extern uint8_t ds18b20rsp( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom, uint8_t *sp );
 extern uint8_t ds18b20wsp( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom, uint8_t th, uint8_t tl, uint8_t conf );
