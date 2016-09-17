@@ -57,7 +57,7 @@ static void ds18b20match( volatile uint8_t *port, volatile uint8_t *direction, v
     }
 }
 
-uint8_t ds18b20request( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom )
+uint8_t ds18b20convert( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom )
 {
 	//Send conversion request to DS18B20 on one wire bus
 

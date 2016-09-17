@@ -30,7 +30,7 @@ int main( )
 	while ( 1 )
 	{
 		//Start conversion (without ROM matching)
-		ds18b20request( &PORTB, &DDRB, &PINB, ( 1 << 0 ), NULL );
+		ds18b20convert( &PORTB, &DDRB, &PINB, ( 1 << 0 ), NULL );
 
 		//Delay (sensor needs time to perform conversion)
 		_delay_ms( 1000 );

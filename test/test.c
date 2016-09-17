@@ -15,7 +15,7 @@ int main( )
 	while ( 1 )
 	{
 		//Start conversion
-		ds18b20request( &PORTB, &DDRB, &PINB, ( 1 << 0 ), NULL );
+		ds18b20convert( &PORTB, &DDRB, &PINB, ( 1 << 0 ), NULL );
 
 		//Delay
 		_delay_ms( 1000 );
