@@ -7,6 +7,7 @@
  */
 
 #include <stdlib.h>
+#include <util/delay.h>
 #include "../include/ds18b20.h"
 
 static uint8_t ds18b20crc8( uint8_t *data, uint8_t length )
@@ -113,6 +114,26 @@ uint8_t ds18b20wsp( volatile uint8_t *port, volatile uint8_t *direction, volatil
     onewireWrite( port, direction, portin, mask, th );
     onewireWrite( port, direction, portin, mask, tl );
     onewireWrite( port, direction, portin, mask, conf );
+
+    return DS18B20_ERROR_OK;
+}
+
+uint8_t ds18b20csp( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom )
+{
+    //Copies DS18B20 scratchpad contents to its EEPROM
+
+    if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM ) return DS18B20_ERROR_COMM;
+    ds18b20match( port, direction, portin, mask, rom );
+
+    //Copy scratchpad
+    onewireWrite( port, direction, portin, mask, DS18B20_COMMAND_COPY_SP );
+
+    //Set pin high for 10ms
+    *port |= mask;
+    *direction |= mask;
+    _delay_ms( 10 );
+    *direction &= ~mask;
+    *port &= ~mask;
 
     return DS18B20_ERROR_OK;
 }
