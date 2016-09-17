@@ -9,6 +9,32 @@
 #include <stdlib.h>
 #include "../include/ds18b20.h"
 
+static unsigned char ds1820crc8( unsigned char *data, unsigned char length )
+{
+	//Generate 8bit CRC for given data (Maxim/Dallas)
+    //data - pointer to data
+    //length - length of data to use
+
+    unsigned char i = 0;
+    unsigned char j = 0;
+	unsigned char mix;
+    unsigned char crc = 0;
+
+    for ( i = 0; i < length; i++ )
+    {
+        unsigned char byte = data[i];
+
+        for( j = 0; j < 8; j++ )
+        {
+            mix = ( crc ^ byte ) & 0x01;
+            crc >>= 1;
+            if ( mix ) crc ^= 0x8C;
+            byte >>= 1;
+        }
+    }
+    return crc;
+}
+
 unsigned char ds1820request( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask )
 {
 	//Send conversion request to DS1820 on one wire bus
@@ -155,30 +181,4 @@ unsigned char ds1820conf( volatile uint8_t *port, volatile uint8_t *direction, v
     onewireWrite( port, direction, portin, mask, dsconf );
 
     return DS1820_ERROR_OK;
-}
-
-unsigned char ds1820crc8( unsigned char *data, unsigned char length )
-{
-	//Generate 8bit CRC for given data (Maxim/Dallas)
-    //data - pointer to data
-    //length - length of data to use
-
-    unsigned char i = 0;
-    unsigned char j = 0;
-	unsigned char mix;
-    unsigned char crc = 0;
-
-    for ( i = 0; i < length; i++ )
-    {
-        unsigned char byte = data[i];
-
-        for( j = 0; j < 8; j++ )
-        {
-            mix = ( crc ^ byte ) & 0x01;
-            crc >>= 1;
-            if ( mix ) crc ^= 0x8C;
-            byte >>= 1;
-        }
-    }
-    return crc;
 }

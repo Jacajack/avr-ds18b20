@@ -28,6 +28,5 @@ extern int ds18b20mread( volatile uint8_t *port, volatile uint8_t *direction, vo
 extern unsigned char ds1820rom( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom );
 extern unsigned char ds1820verify( int temperature );
 extern unsigned char ds1820conf( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t th, uint8_t tl, uint8_t dsconf );
-extern unsigned char ds1820crc8( unsigned char *data, unsigned char length );
 
 #endif
