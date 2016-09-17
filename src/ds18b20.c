@@ -9,20 +9,19 @@
 #include <stdlib.h>
 #include "../include/ds18b20.h"
 
-static unsigned char ds18b20crc8( unsigned char *data, unsigned char length )
+static uint8_t ds18b20crc8( uint8_t *data, uint8_t length )
 {
 	//Generate 8bit CRC for given data (Maxim/Dallas)
-    //data - pointer to data
-    //length - length of data to use
 
-    unsigned char i = 0;
-    unsigned char j = 0;
-	unsigned char mix;
-    unsigned char crc = 0;
+    uint8_t i = 0;
+    uint8_t j = 0;
+	uint8_t mix = 0;
+    uint8_t crc = 0;
+    uint8_t byte = 0;
 
     for ( i = 0; i < length; i++ )
     {
-        unsigned char byte = data[i];
+        byte = data[i];
 
         for( j = 0; j < 8; j++ )
         {
@@ -35,7 +34,7 @@ static unsigned char ds18b20crc8( unsigned char *data, unsigned char length )
     return crc;
 }
 
-unsigned char ds18b20request( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask )
+uint8_t ds18b20request( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask )
 {
 	//Send conversion request to DS18B20 on one wire bus
 
@@ -46,16 +45,17 @@ unsigned char ds18b20request( volatile uint8_t *port, volatile uint8_t *directio
 	return DS18B20_ERROR_OK;
 }
 
-int ds18b20read( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask )
+uint8_t ds18b20read( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, int16_t *temperature )
 {
 	//Read temperature from DS18B20
     //Note: returns actual temperature * 16
 
-    unsigned char response[9];
-    unsigned char i = 0;
-    int temperature;
+    uint8_t response[9];
+    uint8_t i = 0;
 
-    if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM ) return DS18B20_ERROR_COMM_TEMP; //Check communication
+    //Check communication
+    if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM )
+        return DS18B20_ERROR_COMM;
 
     onewireWrite( port, direction, portin, mask, 0xCC ); //Command - Skip ROM
     onewireWrite( port, direction, portin, mask, 0xBE ); //Command - Read Scratchpad
@@ -63,48 +63,62 @@ int ds18b20read( volatile uint8_t *port, volatile uint8_t *direction, volatile u
     for ( i = 0; i < 9; i++ )
         response[i] = onewireRead( port, direction, portin, mask );
 
+    //Pull-up check
     if ( ( response[0] | response[1] | response[2] | response[3] | response[4] | response[5] | response[6] | response[7] ) == 0 )
-        return DS18B20_ERROR_PULL_TEMP; //Pull-up check
+        return DS18B20_ERROR_PULL;
 
-    temperature = (int)( response[1] << 8 ) + ( response[0] & 0xFF ); //Get temperature from received data
-    temperature = ds18b20crc8( response, 8 ) != response[8] ? DS18B20_ERROR_CRC_TEMP : temperature; //CRC check
+    //CRC check
+    if ( ds18b20crc8( response, 8 ) != response[8] )
+        return DS18B20_ERROR_CRC;
 
-    return temperature;
+    //Get temperature from received data
+    *temperature = (int16_t)( response[1] << 8 ) + ( response[0] & 0xFF );
+
+    return DS18B20_ERROR_OK;
 }
 
 
-int ds18b20mread( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom )
+uint8_t ds18b20mread( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom, int16_t *temperature )
 {
 	//Read temperature from DS18B20
     //Note: returns actual temperature * 16
 
-    unsigned char response[9];
-    unsigned char i = 0;
-    int temperature;
+    uint8_t response[9];
+    uint8_t i = 0;
 
-	if ( rom == NULL ) return DS18B20_ERROR_OTHER_TEMP; //Check for pointer error
-    if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM ) return DS18B20_ERROR_COMM_TEMP; //Communication check
+    //Check for pointer error
+	if ( rom == NULL ) return DS18B20_ERROR_OTHER;
 
-    onewireWrite( port, direction, portin, mask, 0x55 ); //Command - Match ROM
+    //Communication check
+    if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM )
+        return DS18B20_ERROR_COMM;
 
+    //Match ROM
+    onewireWrite( port, direction, portin, mask, 0x55 );
     for ( i = 0; i < 8; i++ )
         onewireWrite( port, direction, portin, mask, rom[i] );
 
-    onewireWrite( port, direction, portin, mask, 0xBE ); //Command - Read Scratchpad
+    //Read scratchpad
+    onewireWrite( port, direction, portin, mask, 0xBE );
 
     for ( i = 0; i < 9; i++ )
         response[i] = onewireRead( port, direction, portin, mask );
 
+    //Check pull-up
     if ( ( response[0] | response[1] | response[2] | response[3] | response[4] | response[5] | response[6] | response[7] ) == 0 )
-        return DS18B20_ERROR_PULL_TEMP; //Check pull-up
+        return DS18B20_ERROR_PULL;
 
-    temperature = (int)( response[1] << 8 ) + ( response[0] & 0xFF ); //Get temperature from received data
-    temperature = ds18b20crc8( response, 8 ) != response[8] ? DS18B20_ERROR_CRC_TEMP : temperature; //CRC check
+    //CRC check
+    if ( ds18b20crc8( response, 8 ) != response[8] )
+        return DS18B20_ERROR_CRC;
 
-    return temperature;
+    //Get temperature from received data
+    *temperature = (int)( response[1] << 8 ) + ( response[0] & 0xFF );
+
+    return DS18B20_ERROR_OK;
 }
 
-unsigned char ds18b20rom( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom )
+uint8_t ds18b20rom( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom )
 {
 	//Read DS18B20 rom
 
@@ -134,7 +148,7 @@ unsigned char ds18b20rom( volatile uint8_t *port, volatile uint8_t *direction, v
     return DS18B20_ERROR_OK;
 }
 
-unsigned char ds18b20conf( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t th, uint8_t tl, uint8_t dsconf )
+uint8_t ds18b20conf( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t th, uint8_t tl, uint8_t dsconf )
 {
 	//Set up DS18B20 internal confuration
     //th - thermostat high temperature
