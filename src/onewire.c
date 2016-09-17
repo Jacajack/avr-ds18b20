@@ -13,12 +13,12 @@
 
 #include "../include/onewire.h"
 
-unsigned char onewireInit( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask )
+uint8_t onewireInit( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask )
 {
-	//Init one wire bus
+	//Init one wire bus (it's basically reset pulse)
 
-    unsigned char response = 0;
-    unsigned char sreg = SREG; //Store status register
+    uint8_t response = 0;
+    uint8_t sreg = SREG; //Store status register
 
     cli( ); //Disable interrupts
 
@@ -50,8 +50,8 @@ void onewireWrite( volatile uint8_t *port, volatile uint8_t *direction, volatile
 {
 	//Write byte to one wire bus
 
-	unsigned char sreg = SREG; //Store status register
-    unsigned char i = 0;
+	uint8_t sreg = SREG; //Store status register
+    uint8_t i = 0;
 
 	cli( );
 
@@ -73,13 +73,13 @@ void onewireWrite( volatile uint8_t *port, volatile uint8_t *direction, volatile
 	SREG = sreg;
 }
 
-unsigned char onewireRead( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask )
+uint8_t onewireRead( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask )
 {
 	//Read byte from one wire data bus
 
-	unsigned char sreg = SREG; //Store status register
-    unsigned char data = 0;
-    unsigned char i = 0;
+	uint8_t sreg = SREG; //Store status register
+    uint8_t data = 0;
+    uint8_t i = 0;
 
 	cli( ); //Disable interrupts
 
