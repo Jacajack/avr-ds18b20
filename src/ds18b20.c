@@ -34,13 +34,37 @@ static uint8_t ds18b20crc8( uint8_t *data, uint8_t length )
     return crc;
 }
 
-uint8_t ds18b20request( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask )
+static void ds18b20match( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom )
+{
+    //Perform ROM match operation on DS18B20 devices
+    //Or skip ROM matching if ptr is NULL
+
+    uint8_t i = 0;
+
+    //If rom pointer is NULL then read temperature without matching.
+	if ( rom == NULL )
+    {
+        //Skip ROM
+        onewireWrite( port, direction, portin, mask, 0xCC );
+    }
+    else
+    {
+        //Match ROM
+        onewireWrite( port, direction, portin, mask, 0x55 );
+        for ( i = 0; i < 8; i++ )
+            onewireWrite( port, direction, portin, mask, rom[i] );
+    }
+}
+
+uint8_t ds18b20request( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom )
 {
 	//Send conversion request to DS18B20 on one wire bus
 
     if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM ) return DS18B20_ERROR_COMM;
-    onewireWrite( port, direction, portin, mask, 0xCC ); //Command - Skip ROM
-    onewireWrite( port, direction, portin, mask, 0x44 ); //Command - Convert
+    ds18b20match( port, direction, portin, mask, rom );
+
+    //Convert temperature
+    onewireWrite( port, direction, portin, mask, 0x44 );
 
 	return DS18B20_ERROR_OK;
 }
@@ -57,19 +81,8 @@ uint8_t ds18b20read( volatile uint8_t *port, volatile uint8_t *direction, volati
     if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM )
         return DS18B20_ERROR_COMM;
 
-    //If rom pointer is NULL then read temperature without matching.
-	if ( rom == NULL )
-    {
-        //Skip ROM
-        onewireWrite( port, direction, portin, mask, 0xCC );
-    }
-    else
-    {
-        //Match ROM
-        onewireWrite( port, direction, portin, mask, 0x55 );
-        for ( i = 0; i < 8; i++ )
-            onewireWrite( port, direction, portin, mask, rom[i] );
-    }
+    //Match (or not) ROM
+    ds18b20match( port, direction, portin, mask, rom );
 
     //Read scratchpad
     onewireWrite( port, direction, portin, mask, 0xBE );
@@ -121,7 +134,7 @@ uint8_t ds18b20rom( volatile uint8_t *port, volatile uint8_t *direction, volatil
     return DS18B20_ERROR_OK;
 }
 
-uint8_t ds18b20wsp( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t th, uint8_t tl, uint8_t conf )
+uint8_t ds18b20wsp( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom, uint8_t th, uint8_t tl, uint8_t conf )
 {
 	//Writes DS18B20 scratchpad
     //th - thermostat high temperature
@@ -129,9 +142,10 @@ uint8_t ds18b20wsp( volatile uint8_t *port, volatile uint8_t *direction, volatil
     //conf - configuration byte
 
     if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM ) return DS18B20_ERROR_COMM;
-    onewireWrite( port, direction, portin, mask, 0xCC ); //Command - SKIP ROM
-    onewireWrite( port, direction, portin, mask, 0x4E ); //Write scratchpad
+    ds18b20match( port, direction, portin, mask, rom );
 
+    //Write scratchpad
+    onewireWrite( port, direction, portin, mask, 0x4E );
     onewireWrite( port, direction, portin, mask, th );
     onewireWrite( port, direction, portin, mask, tl );
     onewireWrite( port, direction, portin, mask, conf );
