@@ -11,16 +11,16 @@
 
 #include "onewire.h"
 
-#define DS1820_ERROR_OK 	0
-#define DS1820_ERROR_CRC 	1
-#define DS1820_ERROR_COMM	2
-#define DS1820_ERROR_PULL 	3
-#define DS1820_ERROR_OTHER 	4
+#define DS18B20_ERROR_OK 	0
+#define DS18B20_ERROR_CRC 	1
+#define DS18B20_ERROR_COMM	2
+#define DS18B20_ERROR_PULL 	3
+#define DS18B20_ERROR_OTHER 	4
 
-#define DS1820_ERROR_CRC_TEMP 	16000
-#define DS1820_ERROR_COMM_TEMP	17600
-#define DS1820_ERROR_PULL_TEMP 	19200
-#define DS1820_ERROR_OTHER_TEMP 20800
+#define DS18B20_ERROR_CRC_TEMP 	16000
+#define DS18B20_ERROR_COMM_TEMP	17600
+#define DS18B20_ERROR_PULL_TEMP 	19200
+#define DS18B20_ERROR_OTHER_TEMP 20800
 
 extern unsigned char ds18b20request( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask );
 extern int ds18b20read( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask );

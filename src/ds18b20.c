@@ -37,25 +37,25 @@ static unsigned char ds18b20crc8( unsigned char *data, unsigned char length )
 
 unsigned char ds18b20request( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask )
 {
-	//Send conversion request to DS1820 on one wire bus
+	//Send conversion request to DS18B20 on one wire bus
 
-    if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM ) return DS1820_ERROR_COMM;
+    if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM ) return DS18B20_ERROR_COMM;
     onewireWrite( port, direction, portin, mask, 0xCC ); //Command - Skip ROM
     onewireWrite( port, direction, portin, mask, 0x44 ); //Command - Convert
 
-	return DS1820_ERROR_OK;
+	return DS18B20_ERROR_OK;
 }
 
 int ds18b20read( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask )
 {
-	//Read temperature from DS1820
+	//Read temperature from DS18B20
     //Note: returns actual temperature * 16
 
     unsigned char response[9];
     unsigned char i = 0;
     int temperature;
 
-    if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM ) return DS1820_ERROR_COMM_TEMP; //Check communication
+    if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM ) return DS18B20_ERROR_COMM_TEMP; //Check communication
 
     onewireWrite( port, direction, portin, mask, 0xCC ); //Command - Skip ROM
     onewireWrite( port, direction, portin, mask, 0xBE ); //Command - Read Scratchpad
@@ -64,10 +64,10 @@ int ds18b20read( volatile uint8_t *port, volatile uint8_t *direction, volatile u
         response[i] = onewireRead( port, direction, portin, mask );
 
     if ( ( response[0] | response[1] | response[2] | response[3] | response[4] | response[5] | response[6] | response[7] ) == 0 )
-        return DS1820_ERROR_PULL_TEMP; //Pull-up check
+        return DS18B20_ERROR_PULL_TEMP; //Pull-up check
 
     temperature = (int)( response[1] << 8 ) + ( response[0] & 0xFF ); //Get temperature from received data
-    temperature = ds18b20crc8( response, 8 ) != response[8] ? DS1820_ERROR_CRC_TEMP : temperature; //CRC check
+    temperature = ds18b20crc8( response, 8 ) != response[8] ? DS18B20_ERROR_CRC_TEMP : temperature; //CRC check
 
     return temperature;
 }
@@ -75,15 +75,15 @@ int ds18b20read( volatile uint8_t *port, volatile uint8_t *direction, volatile u
 
 int ds18b20mread( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom )
 {
-	//Read temperature from DS1820
+	//Read temperature from DS18B20
     //Note: returns actual temperature * 16
 
     unsigned char response[9];
     unsigned char i = 0;
     int temperature;
 
-	if ( rom == NULL ) return DS1820_ERROR_OTHER_TEMP; //Check for pointer error
-    if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM ) return DS1820_ERROR_COMM_TEMP; //Communication check
+	if ( rom == NULL ) return DS18B20_ERROR_OTHER_TEMP; //Check for pointer error
+    if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM ) return DS18B20_ERROR_COMM_TEMP; //Communication check
 
     onewireWrite( port, direction, portin, mask, 0x55 ); //Command - Match ROM
 
@@ -96,25 +96,25 @@ int ds18b20mread( volatile uint8_t *port, volatile uint8_t *direction, volatile 
         response[i] = onewireRead( port, direction, portin, mask );
 
     if ( ( response[0] | response[1] | response[2] | response[3] | response[4] | response[5] | response[6] | response[7] ) == 0 )
-        return DS1820_ERROR_PULL_TEMP; //Check pull-up
+        return DS18B20_ERROR_PULL_TEMP; //Check pull-up
 
     temperature = (int)( response[1] << 8 ) + ( response[0] & 0xFF ); //Get temperature from received data
-    temperature = ds18b20crc8( response, 8 ) != response[8] ? DS1820_ERROR_CRC_TEMP : temperature; //CRC check
+    temperature = ds18b20crc8( response, 8 ) != response[8] ? DS18B20_ERROR_CRC_TEMP : temperature; //CRC check
 
     return temperature;
 }
 
 unsigned char ds18b20rom( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom )
 {
-	//Read DS1820 rom
+	//Read DS18B20 rom
 
     unsigned char i = 0;
 
-	if ( rom == NULL ) return DS1820_ERROR_OTHER;
+	if ( rom == NULL ) return DS18B20_ERROR_OTHER;
     if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM )
 	{
 		for ( i = 0; i < 8; i++ ) rom[i] = 0;
-		return DS1820_ERROR_COMM;
+		return DS18B20_ERROR_COMM;
 	}
 
     onewireWrite( port, direction, portin, mask, 0x33 ); //Command - Read ROM
@@ -122,26 +122,26 @@ unsigned char ds18b20rom( volatile uint8_t *port, volatile uint8_t *direction, v
     for ( i = 0; i < 8; i++ )
         rom[i] = onewireRead( port, direction, portin, mask );
 
-    if ( ( rom[0] | rom[1] | rom[2] | rom[3] | rom[4] | rom[5] | rom[6] | rom[7] ) == 0 ) return DS1820_ERROR_PULL;
+    if ( ( rom[0] | rom[1] | rom[2] | rom[3] | rom[4] | rom[5] | rom[6] | rom[7] ) == 0 ) return DS18B20_ERROR_PULL;
 
 	//Check CRC
 	if ( ds18b20crc8( rom, 7 ) != rom[7] )
 	{
 		for ( i = 0; i < 8; i++ ) rom[i] = 0;
-		return DS1820_ERROR_CRC;
+		return DS18B20_ERROR_CRC;
 	}
 
-    return DS1820_ERROR_OK;
+    return DS18B20_ERROR_OK;
 }
 
 unsigned char ds18b20conf( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t th, uint8_t tl, uint8_t dsconf )
 {
-	//Set up DS1820 internal confuration
+	//Set up DS18B20 internal confuration
     //th - thermostat high temperature
     //tl - thermostat low temperature
-    //dsconf - DS1820 confuration data
+    //dsconf - DS18B20 confuration data
 
-    if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM ) return DS1820_ERROR_COMM;
+    if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM ) return DS18B20_ERROR_COMM;
     onewireWrite( port, direction, portin, mask, 0xCC ); //Command - SKIP ROM
     onewireWrite( port, direction, portin, mask, 0x4E ); //Command - Write Scratchpad
 
@@ -149,5 +149,5 @@ unsigned char ds18b20conf( volatile uint8_t *port, volatile uint8_t *direction, 
     onewireWrite( port, direction, portin, mask, tl );
     onewireWrite( port, direction, portin, mask, dsconf );
 
-    return DS1820_ERROR_OK;
+    return DS18B20_ERROR_OK;
 }
