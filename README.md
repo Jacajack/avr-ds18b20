@@ -1,6 +1,6 @@
-# AVR Dallas1820
+# avr-ds18b20
 
-[![The MIT License](https://img.shields.io/badge/license-MIT-orange.svg?style=flat-square)](http://opensource.org/licenses/MIT) [![Travis CI](https://img.shields.io/travis/Jacajack/avr-ds1820.svg?style=flat-square)](https://travis-ci.org/Jacajack/avr-ds1820)
+[![The MIT License](https://img.shields.io/badge/license-MIT-orange.svg?style=flat-square)](http://opensource.org/licenses/MIT) [![Travis CI](https://img.shields.io/travis/Jacajack/avr-ds18b20.svg?style=flat-square)](https://travis-ci.org/Jacajack/avr-ds18b20)
 
 This is a library for controlling DS1820 temperature sensor with AVR micro-controllers.
 
@@ -18,7 +18,7 @@ This is a library for controlling DS1820 temperature sensor with AVR micro-contr
 #include <stdio.h>
 
 #include "uart.h"
-#include "../include/ds1820.h"
+#include "../include/ds18b20.h"
 
 char txt[80];
 

@@ -7,7 +7,7 @@
  */
 
 #include <stdlib.h>
-#include "../include/ds1820.h"
+#include "../include/ds18b20.h"
 
 unsigned char ds1820request( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask )
 {

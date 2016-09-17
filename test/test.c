@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 #include "uart.h"
-#include "../include/ds1820.h"
+#include "../include/ds18b20.h"
 
 char txt[80];
 
