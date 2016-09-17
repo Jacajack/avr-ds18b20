@@ -148,20 +148,20 @@ uint8_t ds18b20rom( volatile uint8_t *port, volatile uint8_t *direction, volatil
     return DS18B20_ERROR_OK;
 }
 
-uint8_t ds18b20conf( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t th, uint8_t tl, uint8_t dsconf )
+uint8_t ds18b20wsp( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t th, uint8_t tl, uint8_t conf )
 {
-	//Set up DS18B20 internal confuration
+	//Writes DS18B20 scratchpad
     //th - thermostat high temperature
     //tl - thermostat low temperature
-    //dsconf - DS18B20 confuration data
+    //conf - configuration byte
 
     if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM ) return DS18B20_ERROR_COMM;
     onewireWrite( port, direction, portin, mask, 0xCC ); //Command - SKIP ROM
-    onewireWrite( port, direction, portin, mask, 0x4E ); //Command - Write Scratchpad
+    onewireWrite( port, direction, portin, mask, 0x4E ); //Write scratchpad
 
     onewireWrite( port, direction, portin, mask, th );
     onewireWrite( port, direction, portin, mask, tl );
-    onewireWrite( port, direction, portin, mask, dsconf );
+    onewireWrite( port, direction, portin, mask, conf );
 
     return DS18B20_ERROR_OK;
 }
