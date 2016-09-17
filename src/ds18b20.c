@@ -1,4 +1,4 @@
-/* ds1820.c
+/* ds18b20.c
  *
  * Copyright (C) 2016 Jacek Wieczorek
  *
@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include "../include/ds18b20.h"
 
-static unsigned char ds1820crc8( unsigned char *data, unsigned char length )
+static unsigned char ds18b20crc8( unsigned char *data, unsigned char length )
 {
 	//Generate 8bit CRC for given data (Maxim/Dallas)
     //data - pointer to data
@@ -35,7 +35,7 @@ static unsigned char ds1820crc8( unsigned char *data, unsigned char length )
     return crc;
 }
 
-unsigned char ds1820request( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask )
+unsigned char ds18b20request( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask )
 {
 	//Send conversion request to DS1820 on one wire bus
 
@@ -67,7 +67,7 @@ int ds18b20read( volatile uint8_t *port, volatile uint8_t *direction, volatile u
         return DS1820_ERROR_PULL_TEMP; //Pull-up check
 
     temperature = (int)( response[1] << 8 ) + ( response[0] & 0xFF ); //Get temperature from received data
-    temperature = ds1820crc8( response, 8 ) != response[8] ? DS1820_ERROR_CRC_TEMP : temperature; //CRC check
+    temperature = ds18b20crc8( response, 8 ) != response[8] ? DS1820_ERROR_CRC_TEMP : temperature; //CRC check
 
     return temperature;
 }
@@ -99,12 +99,12 @@ int ds18b20mread( volatile uint8_t *port, volatile uint8_t *direction, volatile 
         return DS1820_ERROR_PULL_TEMP; //Check pull-up
 
     temperature = (int)( response[1] << 8 ) + ( response[0] & 0xFF ); //Get temperature from received data
-    temperature = ds1820crc8( response, 8 ) != response[8] ? DS1820_ERROR_CRC_TEMP : temperature; //CRC check
+    temperature = ds18b20crc8( response, 8 ) != response[8] ? DS1820_ERROR_CRC_TEMP : temperature; //CRC check
 
     return temperature;
 }
 
-unsigned char ds1820rom( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom )
+unsigned char ds18b20rom( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom )
 {
 	//Read DS1820 rom
 
@@ -125,7 +125,7 @@ unsigned char ds1820rom( volatile uint8_t *port, volatile uint8_t *direction, vo
     if ( ( rom[0] | rom[1] | rom[2] | rom[3] | rom[4] | rom[5] | rom[6] | rom[7] ) == 0 ) return DS1820_ERROR_PULL;
 
 	//Check CRC
-	if ( ds1820crc8( rom, 7 ) != rom[7] )
+	if ( ds18b20crc8( rom, 7 ) != rom[7] )
 	{
 		for ( i = 0; i < 8; i++ ) rom[i] = 0;
 		return DS1820_ERROR_CRC;
@@ -134,38 +134,7 @@ unsigned char ds1820rom( volatile uint8_t *port, volatile uint8_t *direction, vo
     return DS1820_ERROR_OK;
 }
 
-
-unsigned char ds1820verify( int temperature )
-{
-	//Decode errors from functions for reading temperatures
-
-	switch ( temperature )
-	{
-		case DS1820_ERROR_COMM_TEMP:
-			return DS1820_ERROR_COMM;
-			break;
-
-		case DS1820_ERROR_CRC_TEMP:
-			return DS1820_ERROR_CRC;
-			break;
-
-		case DS1820_ERROR_PULL_TEMP:
-			return DS1820_ERROR_PULL;
-			break;
-
-		case DS1820_ERROR_OTHER_TEMP:
-			return DS1820_ERROR_OTHER;
-			break;
-
-		default:
-			return DS1820_ERROR_OK;
-			break;
-	}
-
-    return DS1820_ERROR_OK;
-}
-
-unsigned char ds1820conf( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t th, uint8_t tl, uint8_t dsconf )
+unsigned char ds18b20conf( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t th, uint8_t tl, uint8_t dsconf )
 {
 	//Set up DS1820 internal confuration
     //th - thermostat high temperature
