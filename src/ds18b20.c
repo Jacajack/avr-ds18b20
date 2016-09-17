@@ -98,6 +98,25 @@ uint8_t ds18b20rsp( volatile uint8_t *port, volatile uint8_t *direction, volatil
     return DS18B20_ERROR_OK;
 }
 
+uint8_t ds18b20wsp( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom, uint8_t th, uint8_t tl, uint8_t conf )
+{
+	//Writes DS18B20 scratchpad
+    //th - thermostat high temperature
+    //tl - thermostat low temperature
+    //conf - configuration byte
+
+    if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM ) return DS18B20_ERROR_COMM;
+    ds18b20match( port, direction, portin, mask, rom );
+
+    //Write scratchpad
+    onewireWrite( port, direction, portin, mask, DS18B20_COMMAND_WRITE_SP );
+    onewireWrite( port, direction, portin, mask, th );
+    onewireWrite( port, direction, portin, mask, tl );
+    onewireWrite( port, direction, portin, mask, conf );
+
+    return DS18B20_ERROR_OK;
+}
+
 uint8_t ds18b20read( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom, int16_t *temperature )
 {
 	//Read temperature from DS18B20
@@ -140,25 +159,6 @@ uint8_t ds18b20rom( volatile uint8_t *port, volatile uint8_t *direction, volatil
 		for ( i = 0; i < 8; i++ ) rom[i] = 0;
 		return DS18B20_ERROR_CRC;
 	}
-
-    return DS18B20_ERROR_OK;
-}
-
-uint8_t ds18b20wsp( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom, uint8_t th, uint8_t tl, uint8_t conf )
-{
-	//Writes DS18B20 scratchpad
-    //th - thermostat high temperature
-    //tl - thermostat low temperature
-    //conf - configuration byte
-
-    if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM ) return DS18B20_ERROR_COMM;
-    ds18b20match( port, direction, portin, mask, rom );
-
-    //Write scratchpad
-    onewireWrite( port, direction, portin, mask, DS18B20_COMMAND_WRITE_SP );
-    onewireWrite( port, direction, portin, mask, th );
-    onewireWrite( port, direction, portin, mask, tl );
-    onewireWrite( port, direction, portin, mask, conf );
 
     return DS18B20_ERROR_OK;
 }
