@@ -1,4 +1,4 @@
-/* ds18b20.h
+/* ds18b20.h - a part of avr-ds18b20 library
  *
  * Copyright (C) 2016 Jacek Wieczorek
  *
