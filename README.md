@@ -5,7 +5,7 @@
 `avr-ds18b20` is an AVR library for controlling DS18B20 temperature sensors.
 It can be easily compiled for every micro-controller supported by `avr-gcc`.
 
-Here's an example:
+## Usage example
 
 ```c
 #include <avr/io.h>
