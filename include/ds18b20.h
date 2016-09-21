@@ -13,8 +13,8 @@
 #include "onewire.h"
 
 #define DS18B20_ERROR_OK 	0
-#define DS18B20_ERROR_CRC 	1
-#define DS18B20_ERROR_COMM	2
+#define DS18B20_ERROR_COMM	1
+#define DS18B20_ERROR_CRC 	2
 #define DS18B20_ERROR_PULL 	3
 #define DS18B20_ERROR_OTHER 4
 #define DS18B20_OK DS18B20_ERROR_OK
