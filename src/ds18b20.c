@@ -140,13 +140,10 @@ uint8_t ds18b20csp( volatile uint8_t *port, volatile uint8_t *direction, volatil
     //Copy scratchpad
     onewireWrite( port, direction, portin, mask, DS18B20_COMMAND_COPY_SP );
 
-    //Set pin high for 10ms
-    //Poor DS18B20 feels happier then...
+    //Set pin high
+    //Poor DS18B20 feels better then...
     *port |= mask;
     *direction |= mask;
-    _delay_ms( 10 );
-    *direction &= ~mask;
-    *port &= ~mask;
 
     return DS18B20_ERROR_OK;
 }
