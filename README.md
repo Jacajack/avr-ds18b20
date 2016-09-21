@@ -2,30 +2,21 @@
 
 [![The MIT License](https://img.shields.io/badge/license-MIT-orange.svg?style=flat-square)](http://opensource.org/licenses/MIT) [![Travis CI](https://img.shields.io/travis/Jacajack/avr-ds18b20.svg?style=flat-square)](https://travis-ci.org/Jacajack/avr-ds18b20)
 
-`avr-ds18b20` is a library for controlling DS18B20 temperature sensors with AVR micro-controllers.
+`avr-ds18b20` is an AVR library for controlling DS18B20 temperature sensors.
+It can be easily compiled for every micro-controller supported by `avr-gcc`.
 
-# Features
- - Allows reading temperatures, ROMs and scratchpads
- - Sensors can be configured
- - Includes simple standalone 1-Wire library
-
-
-# Some C code
+Here's an example:
 
 ```c
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdio.h>
 
-#include "uart.h"
-#include "../include/ds18b20.h"
-
-char txt[80];
+#include "ds18b20.h"
 
 int main( )
 {
 	int temp;
-	uartInit( 9600 );
 
 	while ( 1 )
 	{
@@ -38,9 +29,7 @@ int main( )
 		//Read temperature (without ROM matching)
 		ds18b20read( &PORTB, &DDRB, &PINB, ( 1 << 0 ), NULL, &temp );
 
-        //Somehow output or use data
-		sprintf( txt, "raw: %d\n", temp );
-		uartSend( txt );
+        //Somehow use data stored in `temp` variable
 	}
 
 	return 0;
