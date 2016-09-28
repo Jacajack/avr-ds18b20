@@ -15,15 +15,20 @@ CFLAGS = -Wall -DF_CPU=$(F_CPU) -mmcu=$(MCU) -Os
 LD = avr-ld
 LDFLAGS =
 
+ifneq ($(MAKECMDGOALS),clean)
 ifndef F_CPU
 $(error F_CPU is not set!)
 endif
-
 ifndef MCU
 $(error MCU is not set!)
 endif
+endif
 
-all: obj/ds18b20.o end
+all: obj/ds18b20.o lib/libds18b20.a end
+
+lib/libds18b20.a: obj/ds18b20.o
+	avr-ar -cvq lib/libds18b20.a obj/ds18b20.o
+	avr-ar -t  lib/libds18b20.a
 
 obj/ds18b20.o: force obj/onewire.o obj/tmp/ds18b20.o
 	$(LD) $(LDFLAGS) -r obj/onewire.o obj/tmp/ds18b20.o -o obj/ds18b20.o
@@ -37,9 +42,11 @@ obj/tmp/ds18b20.o: src/ds18b20.c include/ds18b20.h
 force:
 	-mkdir obj
 	-mkdir obj/tmp
+	-mkdir lib
 
 clean:
-	rm -rf obj
+	-rm -rf obj
+	-rm -rf lib
 
 end:
 	avr-size -C --mcu=$(MCU) obj/ds18b20.o
