@@ -3,3 +3,5 @@ obj
 *.gch
 *.elf
 *.hex
+*.a
+lib
