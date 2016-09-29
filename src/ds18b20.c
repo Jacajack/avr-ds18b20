@@ -154,9 +154,16 @@ uint8_t ds18b20read( volatile uint8_t *port, volatile uint8_t *direction, volati
     //Note: returns actual temperature * 16
 
     uint8_t sp[9];
+	uint8_t ec = 0;
 
     //Communication, pull-up, CRC checks happen here
-    ds18b20rsp( port, direction, portin, mask, rom, sp );
+    ec = ds18b20rsp( port, direction, portin, mask, rom, sp );
+
+	if ( ec != DS18B20_ERROR_OK )
+	{
+		*temperature = 0;
+		return ec;
+	}
 
     //Get temperature from received data
     *temperature = (int)( sp[1] << 8 ) + ( sp[0] & 0xFF );
