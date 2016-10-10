@@ -24,7 +24,7 @@ $(error MCU is not set!)
 endif
 endif
 
-all: clean obj/ds18b20.o lib/libds18b20.a end
+all: obj/ds18b20.o lib/libds18b20.a end
 
 lib/libds18b20.a: obj/ds18b20.o
 	avr-ar -cvq lib/libds18b20.a obj/ds18b20.o
