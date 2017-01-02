@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <util/delay.h>
 #include "../include/ds18b20.h"
+#include "../include/onewire.h"
 
 static uint8_t ds18b20crc8( uint8_t *data, uint8_t length )
 {
