@@ -3,7 +3,7 @@
  * Copyright (C) 2016 Jacek Wieczorek
  *
  * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
+ * of the MIT license.	See the LICENSE file for details.
  */
 
 #ifndef DS18B20_H
@@ -12,10 +12,10 @@
 #include <inttypes.h>
 #include "onewire.h"
 
-#define DS18B20_ERROR_OK 	0
+#define DS18B20_ERROR_OK	0
 #define DS18B20_ERROR_COMM	1
-#define DS18B20_ERROR_CRC 	2
-#define DS18B20_ERROR_PULL 	3
+#define DS18B20_ERROR_CRC	2
+#define DS18B20_ERROR_PULL	3
 #define DS18B20_ERROR_OTHER 4
 #define DS18B20_OK DS18B20_ERROR_OK
 
