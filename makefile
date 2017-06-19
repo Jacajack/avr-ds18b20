@@ -30,14 +30,17 @@ lib/libds18b20.a: obj/ds18b20.o
 	avr-ar -cvq lib/libds18b20.a obj/ds18b20.o
 	avr-ar -t  lib/libds18b20.a
 
-obj/ds18b20.o: force obj/onewire.o obj/tmp/ds18b20.o
-	$(LD) $(LDFLAGS) -r obj/onewire.o obj/tmp/ds18b20.o -o obj/ds18b20.o
+obj/ds18b20.o: force obj/onewire.o obj/tmp/ds18b20.o obj/tmp/search.o
+	$(LD) $(LDFLAGS) -r obj/onewire.o obj/tmp/ds18b20.o obj/tmp/search.o -o obj/ds18b20.o 
 
-obj/onewire.o: src/onewire.c include/onewire.h
+obj/onewire.o: src/onewire.c include/ds18b20/onewire.h
 	$(CC) $(CFLAGS) -c src/onewire.c -o obj/onewire.o
 
-obj/tmp/ds18b20.o: src/ds18b20.c include/ds18b20.h
+obj/tmp/ds18b20.o: src/ds18b20.c include/ds18b20/ds18b20.h
 	$(CC) $(CFLAGS) -c src/ds18b20.c -o obj/tmp/ds18b20.o
+	
+obj/tmp/search.o: src/search.c include/ds18b20/search.h
+	$(CC) $(CFLAGS) -c src/search.c -o obj/tmp/search.o
 
 force:
 	-mkdir obj
