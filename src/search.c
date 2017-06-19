@@ -15,7 +15,7 @@
 #include "../include/ds18b20/ds18b20.h"
 #include "../include/ds18b20/search.h"
 
-#ifdef DS18B20_MODULE_SEARCH
+#ifdef DS18B20_MODULE_ROMSEARCH
 
 static inline uint8_t arrbitr( uint8_t *arr, uint8_t n )
 {

@@ -11,8 +11,6 @@
 
 #include <inttypes.h>
 
-#ifdef DS18B20_MODULE_SEARCH
 extern uint8_t ds18b20search( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *romcnt, uint8_t *roms, uint16_t buflen );
-#endif
 
 #endif
