@@ -12,11 +12,11 @@
 #include <inttypes.h>
 #include "onewire.h"
 
-#define DS18B20_ERROR_OK	0
-#define DS18B20_ERROR_COMM	1
-#define DS18B20_ERROR_CRC	2
-#define DS18B20_ERROR_PULL	3
-#define DS18B20_ERROR_OTHER 4
+#define DS18B20_ERROR_OK       0
+#define DS18B20_ERROR_COMM     1
+#define DS18B20_ERROR_CRC      2
+#define DS18B20_ERROR_PULL     3
+#define DS18B20_ERROR_OTHER    4
 #define DS18B20_OK DS18B20_ERROR_OK
 
 #define DS18B20_COMMAND_READ_ROM 0x33
