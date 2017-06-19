@@ -81,7 +81,7 @@ uint8_t ds18b20search( volatile uint8_t *port, volatile uint8_t *direction, vola
 			SREG = sreg;
 			return DS18B20_ERROR_COMM;
 		}
-		onewireWrite( port, direction, portin, mask, 0xF0 );
+		onewireWrite( port, direction, portin, mask, DS18B20_COMMAND_SEARCH_ROM );
 
 		for ( i = 0; i < 64; i++ )
 		{
