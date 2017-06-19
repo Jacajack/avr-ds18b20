@@ -25,8 +25,11 @@ $(error MCU is not set!)
 endif
 endif
 
-ifneq ($(MAKECMDGOALS),)
+ifneq ($(MODULE_ROMSEARCH),)
+$(warning ROM search module will be included!)
 CFLAGS += -DDS18B20_MODULE_ROMSEARCH
+else
+$(warning ROM search module will NOT be included!)
 endif
 
 all: obj/ds18b20.o lib/libds18b20.a end
