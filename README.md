@@ -12,7 +12,7 @@ It can be easily compiled for every micro-controller supported by `avr-gcc`.
 #include <util/delay.h>
 #include <stdio.h>
 
-#include "ds18b20.h"
+#include <ds18b20/ds18b20.h>
 
 int main( )
 {
