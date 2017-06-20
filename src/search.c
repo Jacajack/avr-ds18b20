@@ -15,8 +15,6 @@
 #include "../include/ds18b20/ds18b20.h"
 #include "../include/ds18b20/search.h"
 
-#ifdef DS18B20_MODULE_ROMSEARCH
-
 static inline uint8_t arrbitr( uint8_t *arr, uint8_t n )
 {
 	//Returns nth bit from `arr` array
@@ -146,5 +144,3 @@ uint8_t ds18b20search( volatile uint8_t *port, volatile uint8_t *direction, vola
 
 	return DS18B20_ERROR_OK;
 }
-
-#endif

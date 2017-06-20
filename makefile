@@ -8,7 +8,8 @@
 
 F_CPU =
 MCU =
-MODULE_ROMSEARCH =
+MODULES = obj/onewire.o obj/tmp/ds18b20.o 
+MODULE_ROMSEARCH = 
 
 CC = avr-gcc
 CFLAGS = -Wall -DF_CPU=$(F_CPU) -mmcu=$(MCU) -Os
@@ -23,14 +24,16 @@ endif
 ifndef MCU
 $(error MCU is not set!)
 endif
-endif
-
 ifneq ($(MODULE_ROMSEARCH),)
 $(warning ROM search module will be included!)
 CFLAGS += -DDS18B20_MODULE_ROMSEARCH
+MODULES += obj/tmp/search.o
 else
 $(warning ROM search module will NOT be included!)
 endif
+endif
+
+
 
 all: obj/ds18b20.o lib/libds18b20.a end
 
@@ -38,8 +41,8 @@ lib/libds18b20.a: obj/ds18b20.o
 	avr-ar -cvq lib/libds18b20.a obj/ds18b20.o
 	avr-ar -t  lib/libds18b20.a
 
-obj/ds18b20.o: force obj/onewire.o obj/tmp/ds18b20.o obj/tmp/search.o
-	$(LD) $(LDFLAGS) -r obj/onewire.o obj/tmp/ds18b20.o obj/tmp/search.o -o obj/ds18b20.o
+obj/ds18b20.o: force $(MODULES)
+	$(LD) $(LDFLAGS) -r $(MODULES) -o obj/ds18b20.o
 
 obj/onewire.o: src/onewire.c include/ds18b20/onewire.h
 	$(CC) $(CFLAGS) -c src/onewire.c -o obj/onewire.o
