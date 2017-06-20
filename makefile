@@ -27,7 +27,7 @@ endif
 ifneq ($(MODULE_ROMSEARCH),)
 $(warning ROM search module will be included!)
 CFLAGS += -DDS18B20_MODULE_ROMSEARCH
-MODULES += obj/tmp/search.o
+MODULES += obj/tmp/romsearch.o
 else
 $(warning ROM search module will NOT be included!)
 endif
@@ -50,10 +50,10 @@ obj/onewire.o: src/onewire.c include/ds18b20/onewire.h
 obj/tmp/ds18b20.o: src/ds18b20.c include/ds18b20/ds18b20.h
 	$(CC) $(CFLAGS) -c src/ds18b20.c -o obj/tmp/ds18b20.o
 
-obj/tmp/search.o: src/search.c include/ds18b20/search.h
-	$(CC) $(CFLAGS) -c src/search.c -o obj/tmp/search.o
+obj/tmp/romsearch.o: src/romsearch.c include/ds18b20/romsearch.h
+	$(CC) $(CFLAGS) -c src/romsearch.c -o obj/tmp/romsearch.o
 
-force:
+force: clean
 	-mkdir obj
 	-mkdir obj/tmp
 	-mkdir lib

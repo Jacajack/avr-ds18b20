@@ -6,8 +6,8 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-#ifndef DS18B20_SEARCH_H
-#define DS18B20_SEARCH_H
+#ifndef DS18B20_ROMSEARCH_H
+#define DS18B20_ROMSEARCH_H
 
 #include <inttypes.h>
 

@@ -13,7 +13,7 @@
 #include <stddef.h>
 #include "../include/ds18b20/onewire.h"
 #include "../include/ds18b20/ds18b20.h"
-#include "../include/ds18b20/search.h"
+#include "../include/ds18b20/romsearch.h"
 
 static inline uint8_t arrbitr( uint8_t *arr, uint8_t n )
 {
@@ -65,6 +65,7 @@ uint8_t ds18b20search( volatile uint8_t *port, volatile uint8_t *direction, vola
 	uint8_t i, bit, currom = 0;
 	uint8_t junction[8] = {0};
 	uint8_t sreg = SREG;
+	uint64_t *jun = (uint64_t*) junction; //Not to break strict aliasing rules (or at least skip the warning)
 
 	if ( romcnt == NULL ) return DS18B20_ERROR_OTHER;
 
@@ -136,7 +137,7 @@ uint8_t ds18b20search( volatile uint8_t *port, volatile uint8_t *direction, vola
 				arrbitw( &roms[currom << 3], i, bit );
 			}
 		}
-	} while ( ++currom && *( (uint64_t*) junction ) );
+	} while ( ++currom && *jun );
 
 	*romcnt = currom;
 	SREG = sreg;
