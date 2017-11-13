@@ -55,7 +55,7 @@ static inline uint8_t ckolder( uint8_t *arr, uint8_t len, uint16_t n )
 	for ( i = len - 1; i > buf; i-- )
 		ans |= arr[i];
 
-	ans |= arr[n >> 3] >> ( ( n & 3 ) + 1 );
+	ans |= arr[n >> 3] >> ( ( n & 7 ) + 1 );
 
 	return ans != 0;
 }
