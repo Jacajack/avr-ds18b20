@@ -29,7 +29,7 @@ int main( )
 		//Read temperature (without ROM matching)
 		ds18b20read( &PORTB, &DDRB, &PINB, ( 1 << 0 ), NULL, &temp );
 
-        //Somehow use data stored in `temp` variable
+		//Somehow use data stored in `temp` variable
 	}
 
 	return 0;
