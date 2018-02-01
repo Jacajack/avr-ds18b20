@@ -167,7 +167,7 @@ uint8_t ds18b20read( volatile uint8_t *port, volatile uint8_t *direction, volati
 	}
 
 	//Get temperature from received data
-	*temperature = (int16_t)( sp[1] << 8 ) + ( sp[0] & 0xFF );
+	*temperature = (int16_t)( sp[1] << 8 ) + sp[0];
 
 	return DS18B20_ERROR_OK;
 }
