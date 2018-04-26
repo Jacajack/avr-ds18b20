@@ -10,6 +10,7 @@ F_CPU =
 MCU =
 MODULES = obj/onewire.o obj/tmp/ds18b20.o 
 MODULE_ROMSEARCH = 
+NO_AUTO_CLI =
 
 CC = avr-gcc
 CFLAGS = -Wall -DF_CPU=$(F_CPU) -mmcu=$(MCU) -Os
@@ -18,12 +19,14 @@ LD = avr-ld
 LDFLAGS =
 
 ifneq ($(MAKECMDGOALS),clean)
+
 ifndef F_CPU
 $(error F_CPU is not set!)
 endif
 ifndef MCU
 $(error MCU is not set!)
 endif
+
 ifneq ($(MODULE_ROMSEARCH),)
 $(warning ROM search module will be included!)
 CFLAGS += -DDS18B20_MODULE_ROMSEARCH
@@ -31,6 +34,15 @@ MODULES += obj/tmp/romsearch.o
 else
 $(warning ROM search module will NOT be included!)
 endif
+
+ifneq ($(NO_AUTO_CLI),)
+#Hey, if you ask me why this is the default option - it's called 'backward compatibility' and I hate it
+$(warning cli() will be called automatically in library calls! Please be aware that sometimes it might cause some unwanted behavior.)
+CFLAGS += -DDS18B20_AUTO_CLI -DONEWIRE_AUTO_CLI
+else
+$(warning cli() will not be called automatically in library calls! You now have to manage interrupts all by yourself.)
+endif
+
 endif
 
 
