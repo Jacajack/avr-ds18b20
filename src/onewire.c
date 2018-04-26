@@ -48,7 +48,7 @@ uint8_t onewireInit( volatile uint8_t *port, volatile uint8_t *direction, volati
 	return response != 0 ? ONEWIRE_ERROR_COMM : ONEWIRE_ERROR_OK;
 }
 
-inline uint8_t onewireWriteBit( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t bit )
+uint8_t onewireWriteBit( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t bit )
 {
 	uint8_t sreg = SREG;
 
@@ -90,7 +90,7 @@ void onewireWrite( volatile uint8_t *port, volatile uint8_t *direction, volatile
 	SREG = sreg;
 }
 
-inline uint8_t onewireReadBit( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask )
+uint8_t onewireReadBit( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask )
 {
 	uint8_t bit = 0;
 	uint8_t sreg = SREG;
