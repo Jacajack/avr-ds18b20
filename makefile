@@ -35,7 +35,7 @@ else
 $(warning ROM search module will NOT be included!)
 endif
 
-ifneq ($(NO_AUTO_CLI),)
+ifeq ($(NO_AUTO_CLI),)
 #Hey, if you ask me why this is the default option - it's called 'backward compatibility' and I hate it
 $(warning cli() will be called automatically in library calls! Please be aware that sometimes it might cause some unwanted behavior.)
 CFLAGS += -DDS18B20_AUTO_CLI -DONEWIRE_AUTO_CLI
