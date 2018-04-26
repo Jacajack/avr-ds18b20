@@ -69,7 +69,9 @@ uint8_t ds18b20search( volatile uint8_t *port, volatile uint8_t *direction, vola
 
 	if ( romcnt == NULL ) return DS18B20_ERROR_OTHER;
 
-	cli( );
+	#ifdef DS18B20_AUTO_CLI
+		cli( );
+	#endif
 
 	do
 	{

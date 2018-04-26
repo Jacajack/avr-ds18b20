@@ -20,7 +20,9 @@ uint8_t onewireInit( volatile uint8_t *port, volatile uint8_t *direction, volati
 	uint8_t response = 0;
 	uint8_t sreg = SREG; //Store status register
 
-	cli( ); //Disable interrupts
+	#ifdef ONEWIRE_AUTO_CLI
+		cli( );
+	#endif
 
 	*port |= mask; //Write 1 to output
 	*direction |= mask; //Set port to output
@@ -50,7 +52,9 @@ inline uint8_t onewireWriteBit( volatile uint8_t *port, volatile uint8_t *direct
 {
 	uint8_t sreg = SREG;
 
-	cli( );
+	#ifdef ONEWIRE_AUTO_CLI
+		cli( );
+	#endif
 
 	*port |= mask; //Write 1 to output
 	*direction |= mask;
@@ -76,7 +80,9 @@ void onewireWrite( volatile uint8_t *port, volatile uint8_t *direction, volatile
 	uint8_t sreg = SREG; //Store status register
 	uint8_t i = 0;
 
-	cli( );
+	#ifdef ONEWIRE_AUTO_CLI
+		cli( );
+	#endif
 
 	for ( i = 1; i != 0; i <<= 1 ) //Write byte in 8 single bit writes
 		onewireWriteBit( port, direction, portin, mask, data & i );
@@ -89,7 +95,10 @@ inline uint8_t onewireReadBit( volatile uint8_t *port, volatile uint8_t *directi
 	uint8_t bit = 0;
 	uint8_t sreg = SREG;
 
-	cli( );
+	#ifdef ONEWIRE_AUTO_CLI
+		cli( );
+	#endif
+
 	*port |= mask; //Write 1 to output
 	*direction |= mask;
 	*port &= ~mask; //Write 0 to output
@@ -111,7 +120,9 @@ uint8_t onewireRead( volatile uint8_t *port, volatile uint8_t *direction, volati
 	uint8_t data = 0;
 	uint8_t i = 0;
 
-	cli( ); //Disable interrupts
+	#ifdef ONEWIRE_AUTO_CLI
+		cli( );
+	#endif
 
 	for ( i = 1; i != 0; i <<= 1 ) //Read byte in 8 single bit reads
 		data |= onewireReadBit( port, direction, portin, mask ) * i;
