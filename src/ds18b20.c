@@ -6,12 +6,18 @@
  * of the MIT license.	See the LICENSE file for details.
  */
 
+/**
+	\file
+	\brief Implements functions for controlling the DS18B20 sensors
+*/
+
 #include <stddef.h>
 #include <util/delay.h>
 #include "../include/ds18b20/ds18b20.h"
 #include "../include/ds18b20/onewire.h"
 
-static uint8_t ds18b20crc8( uint8_t *data, uint8_t length )
+//! Calculate CRC of provided data
+uint8_t ds18b20crc8( uint8_t *data, uint8_t length )
 {
 	//Generate 8bit CRC for given data (Maxim/Dallas)
 
@@ -36,7 +42,8 @@ static uint8_t ds18b20crc8( uint8_t *data, uint8_t length )
 	return crc;
 }
 
-static void ds18b20match( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom )
+//! Perform ROM matching
+void ds18b20match( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom )
 {
 	//Perform ROM match operation on DS18B20 devices
 	//Or skip ROM matching if ptr is NULL
@@ -58,6 +65,7 @@ static void ds18b20match( volatile uint8_t *port, volatile uint8_t *direction, v
 	}
 }
 
+//! Request temperature conversion
 uint8_t ds18b20convert( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom )
 {
 	//Send conversion request to DS18B20 on one wire bus
@@ -75,6 +83,7 @@ uint8_t ds18b20convert( volatile uint8_t *port, volatile uint8_t *direction, vol
 	return DS18B20_ERROR_OK;
 }
 
+//! Read sensor scratchpad contents
 uint8_t ds18b20rsp( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom, uint8_t *sp )
 {
 	//Read DS18B20 scratchpad
@@ -104,6 +113,7 @@ uint8_t ds18b20rsp( volatile uint8_t *port, volatile uint8_t *direction, volatil
 	return DS18B20_ERROR_OK;
 }
 
+//! Write sensor scratchpad
 uint8_t ds18b20wsp( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom, uint8_t th, uint8_t tl, uint8_t conf )
 {
 	//Writes DS18B20 scratchpad
@@ -127,6 +137,7 @@ uint8_t ds18b20wsp( volatile uint8_t *port, volatile uint8_t *direction, volatil
 	return DS18B20_ERROR_OK;
 }
 
+//! Copy scratchpad to EEPROM
 uint8_t ds18b20csp( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom )
 {
 	//Copies DS18B20 scratchpad contents to its EEPROM
@@ -149,6 +160,7 @@ uint8_t ds18b20csp( volatile uint8_t *port, volatile uint8_t *direction, volatil
 	return DS18B20_ERROR_OK;
 }
 
+//! Read temperature
 uint8_t ds18b20read( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom, int16_t *temperature )
 {
 	//Read temperature from DS18B20
@@ -172,6 +184,7 @@ uint8_t ds18b20read( volatile uint8_t *port, volatile uint8_t *direction, volati
 	return DS18B20_ERROR_OK;
 }
 
+//! Read ROM address
 uint8_t ds18b20rom( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom )
 {
 	//Read DS18B20 rom

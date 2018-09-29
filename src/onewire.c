@@ -6,6 +6,11 @@
  * of the MIT license.	See the LICENSE file for details.
  */
 
+/**
+	\file
+	\brief Implements 1wire protocol functions
+*/
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
@@ -13,10 +18,9 @@
 
 #include "../include/ds18b20/onewire.h"
 
+//! Initializes 1wire bus before transmission
 uint8_t onewireInit( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask )
 {
-	//Init one wire bus (it's basically reset pulse)
-
 	uint8_t response = 0;
 	uint8_t sreg = SREG; //Store status register
 
@@ -48,6 +52,7 @@ uint8_t onewireInit( volatile uint8_t *port, volatile uint8_t *direction, volati
 	return response != 0 ? ONEWIRE_ERROR_COMM : ONEWIRE_ERROR_OK;
 }
 
+//! Sends a single bit over the 1wire bus
 uint8_t onewireWriteBit( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t bit )
 {
 	uint8_t sreg = SREG;
@@ -73,10 +78,9 @@ uint8_t onewireWriteBit( volatile uint8_t *port, volatile uint8_t *direction, vo
 	return bit != 0;
 }
 
+//! Transmits a byte over 1wire bus
 void onewireWrite( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t data )
 {
-	//Write byte to one wire bus
-
 	uint8_t sreg = SREG; //Store status register
 	uint8_t i = 0;
 
@@ -90,6 +94,7 @@ void onewireWrite( volatile uint8_t *port, volatile uint8_t *direction, volatile
 	SREG = sreg;
 }
 
+//! Reads a bit from the 1wire bus
 uint8_t onewireReadBit( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask )
 {
 	uint8_t bit = 0;
@@ -112,10 +117,9 @@ uint8_t onewireReadBit( volatile uint8_t *port, volatile uint8_t *direction, vol
 	return bit;
 }
 
+//! Reads a byte from the 1wire bus
 uint8_t onewireRead( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask )
 {
-	//Read byte from one wire data bus
-
 	uint8_t sreg = SREG; //Store status register
 	uint8_t data = 0;
 	uint8_t i = 0;

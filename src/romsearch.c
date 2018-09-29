@@ -6,6 +6,11 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
+/**
+	\file
+	\brief Implements functions for searching for connected sensors
+*/
+
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -15,26 +20,23 @@
 #include "../include/ds18b20/ds18b20.h"
 #include "../include/ds18b20/romsearch.h"
 
+//! Returns nth bit from `arr` array
 static inline uint8_t arrbitr( uint8_t *arr, uint8_t n )
 {
-	//Returns nth bit from `arr` array
-
 	if ( arr == NULL ) return 0;
 	return ( arr[n >> 3] & ( 1 << ( n & 7 ) ) ) >> ( n & 7 );
 }
 
+//! Toggles nth bit in `arr` array
 static inline void arrbitt( uint8_t *arr, uint8_t n )
 {
-	//Toggles nth bit in `arr` array
-
 	if ( arr == NULL ) return;
 	arr[n >> 3] ^= ( 1 << ( n & 7 ) );
 }
 
+//! Writes nth bit in `arr` array
 static inline void arrbitw( uint8_t *arr, uint8_t n, uint8_t val )
 {
-	//Writes nth bit in `arr` array
-
 	if ( arr == NULL ) return;
 	if ( val != 0 )
 		arr[n >> 3] |= ( 1 << ( n & 7 ) );
@@ -43,11 +45,10 @@ static inline void arrbitw( uint8_t *arr, uint8_t n, uint8_t val )
 }
 
 
+//! Checks if there are any bits older than `n` set in `arr` array of `len` bytes length
 static inline uint8_t ckolder( uint8_t *arr, uint8_t len, uint16_t n )
 {
-	//Checks if there are any bits older than `n` set in `arr` array of `len` bytes length
-
-	register uint8_t i, ans = 0, buf = 0;
+	uint8_t i, ans = 0, buf = 0;
 
 	if ( arr == NULL ) return 0;
 
@@ -60,6 +61,7 @@ static inline uint8_t ckolder( uint8_t *arr, uint8_t len, uint16_t n )
 	return ans != 0;
 }
 
+//! Searches for connected sensors
 uint8_t ds18b20search( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *romcnt, uint8_t *roms, uint16_t buflen )
 {
 	uint8_t i, bit, currom = 0;
