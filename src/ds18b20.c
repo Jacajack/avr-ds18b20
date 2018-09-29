@@ -94,7 +94,7 @@ uint8_t ds18b20rsp( volatile uint8_t *port, volatile uint8_t *direction, volatil
 		sp[i] = onewireRead( port, direction, portin, mask );
 
 	//Check pull-up
-	if ( *( (uint64_t*) sp ) == 0 )
+	if ( ( sp[0] | sp[1] | sp[2] | sp[3] | sp[4] | sp[5] | sp[6] | sp[7] ) == 0 )
 		return DS18B20_ERROR_PULL;
 
 	//CRC check
