@@ -19,12 +19,16 @@
 /**
 	\brief Performs search for connected DS18B20 sensors.
 	Discovered sensors' ROM addresses are returned in an array.
-	\par This function can be used to only discover the number of connected sensors.
+
+	This function can be used to only discover the number of connected sensors.
 	To do so, \ref roms parameter should be set to NULL. As usual, the value
 	returned through \ref romcnt will be the sensor count.
-	\par In case the total size of discovered ROMs is greater than size of indicated by
-	\ref buflen, the data will be truncated. The value returned though \ref romcnt
-	can be used to used allocate an array of proper size, before repeating the call.
+
+	If the total size of discovered ROMs is greater than buffer size, the user shall only
+	access ROM data addresses up to biggest multiple of 8 less than buffer size.
+	The remaning bytes will contain garbage data and using them may cause UB.
+	The value returned though \ref romcnt can be used to used allocate an array
+	of proper size, before repeating the call.
 
 	\param port A pointer to the port output register
 	\param direction A pointer to the port direction register
