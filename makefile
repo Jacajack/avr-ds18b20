@@ -13,7 +13,7 @@ MODULE_ROMSEARCH =
 NO_AUTO_CLI =
 
 CC = avr-gcc
-CFLAGS = -Wall -DF_CPU=$(F_CPU) -mmcu=$(MCU) -Os
+CFLAGS = -Wall -Wpedantic -DF_CPU=$(F_CPU) -mmcu=$(MCU) -Os -Iinclude
 
 LD = avr-ld
 LDFLAGS =

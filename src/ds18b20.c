@@ -13,8 +13,8 @@
 
 #include <stddef.h>
 #include <util/delay.h>
-#include "../include/ds18b20/ds18b20.h"
-#include "../include/ds18b20/onewire.h"
+#include <ds18b20/ds18b20.h>
+#include <ds18b20/onewire.h>
 
 //! Calculate CRC of provided data
 uint8_t ds18b20crc8( uint8_t *data, uint8_t length )
