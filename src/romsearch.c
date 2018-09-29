@@ -21,65 +21,24 @@
 #include <ds18b20/ds18b20.h>
 #include <ds18b20/romsearch.h>
 
-//! Returns nth bit from `arr` array
-static inline uint8_t arrbitr( uint8_t *arr, uint8_t n )
-{
-	if ( arr == NULL ) return 0;
-	return ( arr[n >> 3] & ( 1 << ( n & 7 ) ) ) >> ( n & 7 );
-}
-
-//! Toggles nth bit in `arr` array
-static inline void arrbitt( uint8_t *arr, uint8_t n )
-{
-	if ( arr == NULL ) return;
-	arr[n >> 3] ^= ( 1 << ( n & 7 ) );
-}
-
-//! Writes nth bit in `arr` array
-static inline void arrbitw( uint8_t *arr, uint8_t n, uint8_t val )
-{
-	if ( arr == NULL ) return;
-	if ( val != 0 )
-		arr[n >> 3] |= ( 1 << ( n & 7 ) );
-	else
-		arr[n >> 3] &= ~( 1 << ( n & 7 ) );
-}
-
-
-//! Checks if there are any bits older than `n` set in `arr` array of `len` bytes length
-static inline uint8_t ckolder( uint8_t *arr, uint8_t len, uint16_t n )
-{
-	uint8_t i, ans = 0, buf = 0;
-
-	if ( arr == NULL ) return 0;
-
-	buf = n >> 3;
-	for ( i = len - 1; i > buf; i-- )
-		ans |= arr[i];
-
-	ans |= arr[n >> 3] >> ( ( n & 7 ) + 1 );
-
-	return ans != 0;
-}
-
 //! Searches for connected sensors
 uint8_t ds18b20search( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *romcnt, uint8_t *roms, uint16_t buflen )
 {
 	uint8_t i, bit, currom = 0;
-	uint64_t j;
-	uint64_t *jun =  &j;
+	uint64_t junction = 0;
 	uint8_t sreg = SREG;
-	uint8_t *junction = (uint8_t*) &j;
 
+	//romcnt is crucial
 	if ( romcnt == NULL ) return DS18B20_ERROR_OTHER;
 
 	#ifdef DS18B20_AUTO_CLI
 		cli( );
 	#endif
 
+	// 1 loop - 1 thermometer discovered
 	do
 	{
-		//Initiate ROM search
+		// Initiate ROM search
 		if ( onewireInit( port, direction, portin, mask ) == ONEWIRE_ERROR_COMM )
 		{
 			*romcnt = 0;
@@ -88,6 +47,7 @@ uint8_t ds18b20search( volatile uint8_t *port, volatile uint8_t *direction, vola
 		}
 		onewireWrite( port, direction, portin, mask, DS18B20_COMMAND_SEARCH_ROM );
 
+		// Access 64 bits of ROM
 		for ( i = 0; i < 64; i++ )
 		{
 			//Request two complementary bits from sensors
@@ -112,42 +72,54 @@ uint8_t ds18b20search( volatile uint8_t *port, volatile uint8_t *direction, vola
 
 				//Received 00 - ROM bits differ
 				case 0:
-					//Check if there are older junction bits set
-					if ( ckolder( junction, 8, i ) )
+					// Check if there are older junction bits set
+					// If there are bits older than i set, the junction value shifted
+					// By i+1 bits to the right will be nonzero
+					if ( junction >> ( i + 1 ) )
 					{
-						//Send complement of junction bit
-						bit = !arrbitr( junction, i );
+						// Send complement of junction bit
+						bit = !( junction & ( 1 << i ) );
 					}
 					else
 					{
-						//Send value of junction bit and toggle it afterwards
-						bit = arrbitr( junction, i );
-						arrbitt( junction, i );
+						// Send value of junction bit and toggle it afterwards
+						bit = ( junction & ( 1 << i ) );
+						if ( bit )
+							junction &= ~( 1 << i );
+						else
+							junction |= ( 1 << i );
 					}
 					break;
 			}
 
-			//Send response bit depending on junction status
+			// Send response bit depending on junction status
+			// At this point bit is either 0 or 1 and corresponds
+			// to the discovered ROM value
 			onewireWriteBit( port, direction, portin, mask, bit );
 
-			//Write
+			// Write discovered bit to the ROM array
+			// Or just pretend we did just to update ROM counter
 			if ( roms != NULL )
 			{
-				//Check if ROM buffer can be written
-				if ( ( currom << 3 ) + ( i >> 3 ) >= buflen )
+				// Byte index in the ROM array
+				uint16_t bytenum = ( currom << 3 ) + ( i >> 3 );
+
+				// Check if ROM buffer can be written
+				if ( bytenum < buflen )
 				{
-					*romcnt = 0;
-					SREG = sreg;
-					return DS18B20_ERROR_OTHER;
+					// Write ith bit in the array
+					if ( bit != 0 )
+						roms[bytenum] |= ( 1 << ( i & 7 ) );
+					else
+						roms[bytenum] &= ~( 1 << ( i & 7 ) );
 				}
-				arrbitw( &roms[currom << 3], i, bit );
 			}
 		}
-	} while ( ++currom && *jun );
+	}
+	while ( ++currom && junction ); // As long as there are junction bits set
 
 	*romcnt = currom;
 	SREG = sreg;
-	if ( currom == 0 ) return DS18B20_ERROR_COMM; //Exit because of currom overflow (junction broken?)
-
+	if ( currom == 0 ) return DS18B20_ERROR_COMM; // Exit because of currom overflow (junction broken?)
 	return DS18B20_ERROR_OK;
 }
