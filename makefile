@@ -8,8 +8,8 @@
 
 F_CPU =
 MCU =
-MODULES = obj/onewire.o obj/tmp/ds18b20.o 
-MODULE_ROMSEARCH = 
+MODULES = obj/onewire.o obj/tmp/ds18b20.o
+MODULE_ROMSEARCH = 1
 NO_AUTO_CLI =
 
 CC = avr-gcc
