@@ -1,0 +1,7 @@
+sudo: required
+language: c
+before_install:
+  - sudo apt-get update
+install:
+  - sudo apt-get install gcc-avr binutils-avr avr-libc
+script: make all F_CPU=8000000U MCU=atmega328p

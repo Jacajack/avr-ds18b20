@@ -1,0 +1,4 @@
+<map id="ds18b20match" name="ds18b20match">
+<area shape="rect" id="node2" href="$onewire_8c.html#a16d93f36cff22cc1dda71b534ed04daf" title="Transmits a byte over 1wire bus. " alt="" coords="160,5,259,32"/>
+<area shape="rect" id="node3" href="$onewire_8c.html#a96f5b8ab97021e1fe0b0f53735f35bdd" title="Sends a single bit over the 1wire bus. " alt="" coords="307,5,421,32"/>
+</map>

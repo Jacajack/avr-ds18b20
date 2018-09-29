@@ -1,0 +1,9 @@
+*.obj
+obj
+*.gch
+*.elf
+*.hex
+*.a
+lib
+*.swp
+doc

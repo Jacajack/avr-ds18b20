@@ -1,0 +1,4 @@
+<map id="ds18b20read" name="ds18b20read">
+<area shape="rect" id="node2" href="$ds18b20_8c.html#ad62da6a5cb128334b04702aadeeabe43" title="Read sensor scratchpad contents. " alt="" coords="149,5,239,32"/>
+<area shape="rect" id="node3" href="$onewire_8c.html#abfd46aad176c638fe2c2ee5660a96e59" title="Initializes 1wire bus before transmission. " alt="" coords="287,5,372,32"/>
+</map>
