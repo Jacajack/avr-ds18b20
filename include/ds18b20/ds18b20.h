@@ -40,6 +40,11 @@
 
 #define DS18B20_MUL 16 //!< Temperature multiplier (so we don't need floats)
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 /**
 	\brief Calculate 8-bit Maxim/Dallas CRC of provided data
 	\param data A pointer to the data to be processed
@@ -144,4 +149,8 @@ extern uint8_t ds18b20read( volatile uint8_t *port, volatile uint8_t *direction,
 */
 extern uint8_t ds18b20rom( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask, uint8_t *rom );
 
+#ifdef __cplusplus
+}
+#endif
+	
 #endif
