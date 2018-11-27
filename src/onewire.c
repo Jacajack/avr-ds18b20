@@ -35,7 +35,7 @@ uint8_t onewireInit( volatile uint8_t *port, volatile uint8_t *direction, volati
 
 	*direction &= ~mask; //Set port to input
 
-	_delay_us( 100 );
+	_delay_us( 70 );
 
 	response = *portin & mask; //Read input
 
