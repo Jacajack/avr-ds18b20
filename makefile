@@ -8,15 +8,12 @@
 
 F_CPU =
 MCU =
-MODULES = obj/onewire.o obj/tmp/ds18b20.o
+MODULES = obj/onewire.o obj/ds18b20.o
 MODULE_ROMSEARCH = 1
 NO_AUTO_CLI =
 
 CC = avr-gcc
 CFLAGS = -Wall -Wpedantic -DF_CPU=$(F_CPU) -mmcu=$(MCU) -Os -Iinclude
-
-LD = avr-ld
-LDFLAGS =
 
 ifneq ($(MAKECMDGOALS),clean)
 
@@ -30,7 +27,7 @@ endif
 ifneq ($(MODULE_ROMSEARCH),)
 $(warning ROM search module will be included!)
 CFLAGS += -DDS18B20_MODULE_ROMSEARCH
-MODULES += obj/tmp/romsearch.o
+MODULES += obj/romsearch.o
 else
 $(warning ROM search module will NOT be included!)
 endif
@@ -47,27 +44,23 @@ endif
 
 
 
-all: obj/ds18b20.o lib/libds18b20.a end
+all: force lib/libds18b20.a end
 
-lib/libds18b20.a: obj/ds18b20.o
-	avr-ar -cvq lib/libds18b20.a obj/ds18b20.o
+lib/libds18b20.a: $(MODULES)
+	avr-ar -cvq lib/libds18b20.a $(MODULES)
 	avr-ar -t  lib/libds18b20.a
-
-obj/ds18b20.o: force $(MODULES)
-	$(LD) $(LDFLAGS) -r $(MODULES) -o obj/ds18b20.o
 
 obj/onewire.o: src/onewire.c include/ds18b20/onewire.h
 	$(CC) $(CFLAGS) -c src/onewire.c -o obj/onewire.o
 
-obj/tmp/ds18b20.o: src/ds18b20.c include/ds18b20/ds18b20.h
-	$(CC) $(CFLAGS) -c src/ds18b20.c -o obj/tmp/ds18b20.o
+obj/ds18b20.o: src/ds18b20.c include/ds18b20/ds18b20.h
+	$(CC) $(CFLAGS) -c src/ds18b20.c -o obj/ds18b20.o
 
-obj/tmp/romsearch.o: src/romsearch.c include/ds18b20/romsearch.h
-	$(CC) $(CFLAGS) -c src/romsearch.c -o obj/tmp/romsearch.o
+obj/romsearch.o: src/romsearch.c include/ds18b20/romsearch.h
+	$(CC) $(CFLAGS) -c src/romsearch.c -o obj/romsearch.o
 
 force: clean
 	-mkdir obj
-	-mkdir obj/tmp
 	-mkdir lib
 
 clean:
@@ -75,4 +68,4 @@ clean:
 	-rm -rf lib
 
 end:
-	avr-size -C --mcu=$(MCU) obj/ds18b20.o
+	avr-size -C --mcu=$(MCU) lib/libds18b20.a
