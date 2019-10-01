@@ -14,6 +14,11 @@
 #ifndef ONEWIRE_H
 #define ONEWIRE_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <inttypes.h>
 
 #define ONEWIRE_ERROR_OK 	0 //! Communication success
@@ -69,5 +74,9 @@ extern uint8_t onewireReadBit( volatile uint8_t *port, volatile uint8_t *directi
 	\returns received byte value
 */
 extern uint8_t onewireRead( volatile uint8_t *port, volatile uint8_t *direction, volatile uint8_t *portin, uint8_t mask );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
